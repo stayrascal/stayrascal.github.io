@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Stay Rascal" />
+
+
+
+<meta name="description" content="朴素贝叶斯">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bayes">
+<meta property="og:url" content="http://http://stayrascal.github.io/2016/04/28/bayes/index.html">
+<meta property="og:site_name" content="Stay Hungery, Stay Foolish">
+<meta property="og:description" content="朴素贝叶斯">
+<meta property="og:updated_time" content="2017-01-24T11:20:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="bayes">
+<meta name="twitter:description" content="朴素贝叶斯">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Stay Hungery, Stay Foolish" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>bayes | Stay Hungery, Stay Foolish</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Stay Rascal</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="true" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>Menu</li>
+                        <li>Tags</li>
+                        
+                        <li>Friends</li>
+                        
+                        
+                        <li>About Me</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:stayrascal@gmail.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/stayrascal" title="GitHub"></a>
+                            
+                                <a class="fa V2EX" href="#" title="V2EX"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="/zhihu" title="知乎"></a>
+                            
+                                <a class="fa 豆瓣" href="/douban" title="豆瓣"></a>
+                            
+                                <a class="fa 简书" href="/jianshu" title="简书"></a>
+                            
+                                <a class="fa Google" href="#" title="Google"></a>
+                            
+                                <a class="fa 微信" href="/Wechat" title="微信"></a>
+                            
+                                <a class="fa Instagram" href="#" title="Instagram"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcuts/">Shortcuts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-JPA/">Spring Data JPA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Stay Rascal</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Stay Rascal</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:stayrascal@gmail.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/stayrascal" title="GitHub"></a>
+                            
+                                <a class="fa V2EX" target="_blank" href="#" title="V2EX"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="/zhihu" title="知乎"></a>
+                            
+                                <a class="fa 豆瓣" target="_blank" href="/douban" title="豆瓣"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="/jianshu" title="简书"></a>
+                            
+                                <a class="fa Google" target="_blank" href="#" title="Google"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="/Wechat" title="微信"></a>
+                            
+                                <a class="fa Instagram" target="_blank" href="#" title="Instagram"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
+</nav>
+      <div class="body-wrap"><article id="post-bayes" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/28/bayes/" class="article-date">
+      <time datetime="2016-04-28T02:59:51.000Z" itemprop="datePublished">2016-04-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      bayes
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h3 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h3><ul>
+<li>优点：在数据较少的情况下仍然有效，可以处理多类别问题</li>
+<li>缺点：对于输入数据的准备方式较为敏感</li>
+<li>适用数据类型：标称型数据</li>
+</ul>
+<h3 id="相关知识点"><a href="#相关知识点" class="headerlink" title="相关知识点"></a>相关知识点</h3><ul>
+<li>贝叶斯决策理论：选择具有最高概率的决策</li>
+<li>条件概率：在某条件已经发生的情况下，计算另外一条件发生的概率 P(a|b) = P(a and b)/P(b)</li>
+<li>贝叶斯准则：P(c|x)P(x)=P(x|c)P(c)</li>
+</ul>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ul>
+<li>数据点(x, y)是属于c1类别还是属于c2类别主要通过比较P(c1|x, y)、P(c2|x, y)来决定</li>
+<li>从文本中获取特征，需要先拆分文本，这里的特征时来自文本的词条(token)，一个词条时字符的人一组合，然后将每一个文本片段表示为一个词条向量，其中值为1表示词条出现在文档中，0表示未出现</li>
+</ul>
+<h3 id="朴素贝叶斯的一般过程"><a href="#朴素贝叶斯的一般过程" class="headerlink" title="朴素贝叶斯的一般过程"></a>朴素贝叶斯的一般过程</h3><ul>
+<li>收集数据：可以使用任何方法，这是使用RSS源</li>
+<li>准备数据：需要数值型或者布尔型数据</li>
+<li>分析数据：有大量特征时，绘制特征作用不大，此时使用直方图效果更好</li>
+<li>训练算法：计算不同的独立特征的条件概率</li>
+<li>测试算法：计算错误率</li>
+<li>使用算法：一个常见的朴素贝叶斯应用时文档分类。可以在任意的分类场景中使用朴素贝叶斯分类器，不一定非要时文本</li>
+</ul>
+<h4 id="收集数据"><a href="#收集数据" class="headerlink" title="收集数据"></a>收集数据</h4><p>把文本看成单词向量</p>
+<pre><code>def loadDataSet():
+    # 进行词条切分后的文档集合
+    postingList = [[&apos;my&apos;, &apos;dog&apos;, &apos;has&apos;, &apos;flea&apos;, &apos;problems&apos;, &apos;help&apos;, &apos;please&apos;],
+                   [&apos;maybe&apos;, &apos;not&apos;, &apos;take&apos;, &apos;him&apos;, &apos;to&apos;, &apos;dog&apos;, &apos;park&apos;, &apos;stupid&apos;],
+                   [&apos;my&apos;, &apos;dalmation&apos;, &apos;is&apos;, &apos;so&apos;, &apos;cute&apos;, &apos;I&apos;, &apos;love&apos;, &apos;him&apos;],
+                   [&apos;stop&apos;, &apos;posting&apos;, &apos;stupid&apos;, &apos;worthless&apos;, &apos;garbage&apos;],
+                   [&apos;mr&apos;, &apos;licks&apos;, &apos;ate&apos;, &apos;my&apos;, &apos;steak&apos;, &apos;how&apos;, &apos;to&apos;, &apos;stop&apos;, &apos;him&apos;],
+                   [&apos;quit&apos;, &apos;buying&apos;, &apos;worthless&apos;, &apos;dog&apos;, &apos;food&apos;, &apos;stupid&apos;]]
+    classVec = [0, 1, 0, 1, 0, 1]  # 1代表侮辱性文字，0代表正常言论
+    return postingList, classVec
+</code></pre><h4 id="准备数据"><a href="#准备数据" class="headerlink" title="准备数据"></a>准备数据</h4><p>词集模型：将每个词的出现与否作为一个特征，创建一个包含所有文档中出现的不重复词的列表</p>
+<pre><code>def createVocabList(dataSet):
+    # 创建一个空集
+    vocabSet = set([])
+    for document in dataSet:
+        # 创建两个集合的并集
+        vocabSet = vocabSet | set(document)
+    return list(vocabSet)
+</code></pre><p>将文本单词向量转化为0和1类型的数值向量，分别代表对应单词在总单词列表中是否出现</p>
+<pre><code># vocabList 词汇表
+# inputSet 输入文档
+def setOfWords2Vec(vocabList, inputSet):
+    # 创建一个其中所含元素都为0的向量
+    returnVec = [0] * len(vocabList)
+    for word in inputSet:
+        if word in vocabList:
+            returnVec[vocabList.index(word)] = 1
+        else:
+            print(&quot;the word: %s is not in my Vocabulary!&quot; % word)
+    return returnVec
+</code></pre><p>词袋模型：针对一个词在文档中不止出现一次。<br>为了适应词袋模型，需要对函数setOfWords2Vec()稍加修改</p>
+<pre><code># vocabList 词汇表
+# inputSet 输入文档
+def bagOfWords2VecMN(vocabList, inputSet):
+    # 创建一个其中所含元素都为0的向量
+    returnVec = [0] * len(vocabList)
+    for word in inputSet:
+        if word in vocabList:
+            returnVec[vocabList.index(word)] += 1
+    return returnVec
+</code></pre><h4 id="训练算法"><a href="#训练算法" class="headerlink" title="训练算法"></a>训练算法</h4><p>从词向量计算计算概率,计算文档中各单词在各类别中的概率(通过某单词出现的次数除以对应类别所有单词总数)</p>
+<pre><code># trainMatrix 文档矩阵
+# trainCategory 每篇文档类别所构成的向量
+def trainNBO(trainMatrix, trainCategory):
+    numTrainDocs = len(trainMatrix)
+    numWords = len(trainMatrix[0])
+    pAbusive = sum(trainCategory) / float(numTrainDocs)
+    # 初始化分子变量
+    p0Num = zeros(numWords)
+    p1Num = zeros(numWords)
+    # 初始化分母变量
+    p0Denom = 0.0
+    p1Denom = 0.0
+    for i in range(numTrainDocs):
+         ＃根据文档类别统计各单词在每个类别中出现的次数以及该类别总次数
+        if trainCategory[i] == 1:
+            p1Num += trainMatrix[i]
+            p1Denom += sum(trainMatrix[i])
+        else:
+            p0Num += trainMatrix[i]
+            p0Denom += sum(trainMatrix[i])
+    p1Vect = p1Num / p1Denom
+    p0Vect = p0Num / p0Denom
+    return p0Vect, p1Vect, pAbusive
+</code></pre><h4 id="测试算法"><a href="#测试算法" class="headerlink" title="测试算法"></a>测试算法</h4><p>利用贝叶斯分类器对文档进行分类时，要计算多个概率的乘积以获得文档属于某个类别的概率，即计算P(w0|1)P(w1|1)P(w2|1)…P(wn|1)。如果其中一个概率值为0，那么最后的乘积也为0。为了降低这种影响，可以将所有的词出现的初始化为1，并将分母化为2。即修改代码：</p>
+<pre><code># 初始化分子变量
+p0Num = ones(numWords)
+p1Num = ones(numWords)
+# 初始化分母变量
+p0Denom = 2.0
+p1Denom = 2.0
+</code></pre><p>另外一个问题时下溢出，这是由于太多很小的数相乘造成的。一种解决办法是对乘积取自然对数。在代数中有ln(a*b) = ln(a) + ln(b)，采用自然对数进行处理不会有任何损失。即修改代码：</p>
+<pre><code>p1Vect = log(p1Num / p1Denom)
+p0Vect = log(p0Num / p0Denom)
+</code></pre><p>朴素贝叶斯分类函数</p>
+<pre><code># vec2Classify 要分类的向量
+def classifyNB(vec2Classify, p0Vec, p1Vec, pClass):
+    # 元素相乘
+    # log(P(w0|1)P(w1|1)....P(1)) = sum(log(P(wi|1))) + log(P(1))
+    p1 = sum(vec2Classify * p1Vec) + log(pClass)
+    p0 = sum(vec2Classify * p0Vec) + log(1.0 - pClass)
+    if p1 &gt; p0:
+        return 1
+    else:
+        return 0
+
+
+def testingNB():
+    listOPosts, listClasses = loadDataSet()
+    myVocabList = createVocabList(listOPosts)
+    trainMat = []
+    for postinDoc in listOPosts:
+        trainMat.append(setOfWords2Vec(myVocabList, postinDoc))
+    p0V, p1V, pAb = trainNBO(trainMat, listClasses)
+
+    testEntry = [&apos;love&apos;, &apos;my&apos;, &apos;dalmation&apos;]
+    thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
+    print(testEntry, &apos;classified as: &apos;, classifyNB(thisDoc, p0V, p1V, pAb))
+
+    testEntry = [&apos;stupid&apos;, &apos;garbage&apos;]
+    thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
+    print(testEntry, &apos;classified as: &apos;, classifyNB(thisDoc, p0V, p1V, pAb))
+</code></pre><h4 id="使用算法"><a href="#使用算法" class="headerlink" title="使用算法"></a>使用算法</h4><h5 id="切分文本"><a href="#切分文本" class="headerlink" title="切分文本"></a>切分文本</h5><pre><code>def textParse(bigString):
+    import re
+    listOfToken = re.split(r&apos;\W+&apos;, bigString)
+    return [token.lower() for token in listOfToken if len(token) &gt; 2]
+</code></pre><h4 id="使用朴素贝叶斯进行交叉验证"><a href="#使用朴素贝叶斯进行交叉验证" class="headerlink" title="使用朴素贝叶斯进行交叉验证"></a>使用朴素贝叶斯进行交叉验证</h4><pre><code>def spamTest():
+    docList = []
+    classList = []
+    fullText = []
+
+    # 导入并解析文本文件
+    for i in range(1, 26):
+        wordList = textParse(open(&apos;email/ham/%d.txt&apos; % i, encoding=&apos;latin1&apos;).read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(0)
+
+        wordList = textParse(open(&apos;email/spam/%d.txt&apos; % i, encoding=&apos;latin1&apos;).read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(1)
+
+    vocabList = createVocabList(docList)
+
+    # 留存交叉验证(hold-out cross validation)
+
+    # 从两个文件中总共获取50封邮件
+    trainingSet = list(range(50))
+
+    # 从50封邮件里面随机选取10封邮件,将它们的索引号保存在testSet里面去,并从trainingSet里面删除对应索引
+    testSet = []
+    for i in range(10):
+        randIndex = int(random.uniform(0, len(trainingSet)))
+        testSet.append(trainingSet[randIndex])
+        del trainingSet[randIndex]
+
+    # 从docList里面选取trainingSet剩余索引对应的数据集作为训练集
+    trainMat = []
+    trainClass = []
+    for docIndex in trainingSet:
+        trainMat.append(setOfWords2Vec(vocabList, docList[docIndex]))
+        trainClass.append(classList[docIndex])
+
+    p0V, p1V, pSpam = trainNBO(array(trainMat), array(trainClass))
+
+    errorCount = 0
+    for docIndex in testSet:
+        wordVector = setOfWords2Vec(vocabList, docList[docIndex])
+        if classifyNB(array(wordVector), p0V, p1V, pSpam) != classList[docIndex]:
+            errorCount += 1
+    print(&apos;the error rate is: &apos;, float(errorCount) / len(testSet))
+</code></pre><p>如何想要更好地估计错误率，需要将这个过程重复多次，然后求其平均</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/04/28/Logistic-回归/">
+                    Logistic 回归
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/04/27/decision-making-tree/">
+                    decision-making tree
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#朴素贝叶斯"><span class="toc-number">1.</span> <span class="toc-text">朴素贝叶斯</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#相关知识点"><span class="toc-number">2.</span> <span class="toc-text">相关知识点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理"><span class="toc-number">3.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#朴素贝叶斯的一般过程"><span class="toc-number">4.</span> <span class="toc-text">朴素贝叶斯的一般过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#收集数据"><span class="toc-number">4.1.</span> <span class="toc-text">收集数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#准备数据"><span class="toc-number">4.2.</span> <span class="toc-text">准备数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#训练算法"><span class="toc-number">4.3.</span> <span class="toc-text">训练算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#测试算法"><span class="toc-number">4.4.</span> <span class="toc-text">测试算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用算法"><span class="toc-number">4.5.</span> <span class="toc-text">使用算法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#切分文本"><span class="toc-number">4.5.1.</span> <span class="toc-text">切分文本</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用朴素贝叶斯进行交叉验证"><span class="toc-number">4.6.</span> <span class="toc-text">使用朴素贝叶斯进行交叉验证</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="Hide"  title="Show or Hide Table of Contents">
+
+    <script>
+        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"bayes　| Stay Hungery, Stay Foolish　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/04/28/Logistic-回归/" title="Pre: Logistic 回归">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/04/27/decision-making-tree/" title="Next: decision-making tree">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/03/01/Deep-Learning/">Deep Learning</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/29/Support-Vector-Machines/">Support Vector Machines</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/28/Logistic-回归/">Logistic 回归</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/28/bayes/">bayes</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/27/decision-making-tree/">decision-making tree</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/27/KNN/">KNN</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/25/Spring-Data-JPA-Tutorial/">Spring Data JPA Tutorial</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/24/bash_keyboard_shortcuts/">Bash Keyboard Shortcuts</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 Stay Rascal
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="Site Visitors"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="Page Hits"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 2;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="Comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

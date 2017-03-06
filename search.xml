@@ -1,0 +1,979 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+    
+    <entry>
+      <title><![CDATA[Deep Learning]]></title>
+      <url>http://http://stayrascal.github.io/2017/03/01/Deep-Learning/</url>
+      <content type="html"><![CDATA[<h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><hr>
+<h2 id="权重初始化"><a href="#权重初始化" class="headerlink" title="权重初始化"></a>权重初始化</h2><ul>
+<li>权重初始化并不等价于权重随机初始化</li>
+<li>为什么需要矩阵权值化<ul>
+<li>当使用高斯分布随机初始化权重的时候，可能导致线性计算的结果远小于-1或者远大于1的数，通过激活函数后所得到的输出会非常接近0或者1，也就是隐藏层神经元处于饱和的状态。所以当出现这样的情况时，在权重中进行微小的调整仅仅会给隐藏层神经元的激活值带来极其微弱的改变。而这种微弱的改变也会影响网络中剩下的神经元，然后会带来相应的代价函数的改变。结果就是，这些权重在我们进行梯度下降算法时会学习得非常缓慢</li>
+<li>我们可以通过改变权重w的分布，使|z|尽量接近于0</li>
+</ul>
+</li>
+<li>如何初始化<ul>
+<li>使用标准正态分布、截断正太分布初始化权重矩阵</li>
+</ul>
+</li>
+<li>权值化的作用<ul>
+<li>打破梯度对称性</li>
+</ul>
+</li>
+<li>参考链接<ul>
+<li><a href="http://neuralnetworksanddeeplearning.com/" target="_blank" rel="external">http://neuralnetworksanddeeplearning.com/</a></li>
+<li><a href="http://www.jianshu.com/p/03009cfdf733" target="_blank" rel="external">http://www.jianshu.com/p/03009cfdf733</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><ul>
+<li>对每个维度都做归一化，使得每个维度的最大和最小值是1和-1</li>
+<li>均值减法（Mean subtraction）：对数据中每个独立特征减去平均值，从几何上可以理解为在每个维度上都将数据云的中心都迁移到原点</li>
+<li>归一化（Normalization）：将数据的所有维度都归一化，使其数值范围都近似相等<ul>
+<li>先对数据做零中心化（zero-centered）处理，然后每个维度都除以其标准差，实现代码为X /= np.std(X, axis=0)</li>
+<li>对每个维度都做归一化，使得每个维度的最大和最小值是1和-1</li>
+<li>PCA和白化（Whitening）：先对数据进行零中心化处理，然后计算协方差矩阵，它展示了数据中的相关性结构</li>
+</ul>
+</li>
+<li>参考链接：<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/21560667" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/21560667</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="梯度下降"><a href="#梯度下降" class="headerlink" title="梯度下降"></a>梯度下降</h2><ul>
+<li>深度学习的优化算法，说白了就是梯度下降。每次的参数更新有两种方式。</li>
+<li>第一种，遍历全部数据集算一次损失函数，然后算函数对各个参数的梯度，更新梯度。这种方法每更新一次参数都要把数据集里的所有样本都看一遍，计算量开销大，计算速度慢，不支持在线学习，这称为Batch gradient descent，批梯度下降。</li>
+<li>另一种，每看一个数据就算一下损失函数，然后求梯度更新参数，这个称为随机梯度下降，stochastic gradient descent。这个方法速度比较快，但是收敛性能不太好，可能在最优点附近晃来晃去，hit不到最优点。两次参数的更新也有可能互相抵消掉，造成目标函数震荡的比较剧烈。</li>
+<li>为了克服两种方法的缺点，现在一般采用的是一种折中手段，mini-batch gradient decent，小批的梯度下降，这种方法把数据分为若干个批，按批来更新参数，这样，一个批中的一组数据共同决定了本次梯度的方向，下降起来就不容易跑偏，减少了随机性。另一方面因为批的样本数与整个数据集相比小了很多，计算量也不是很大。</li>
+</ul>
+<h2 id="为什么要使用激活函数"><a href="#为什么要使用激活函数" class="headerlink" title="为什么要使用激活函数"></a>为什么要使用激活函数</h2><ul>
+<li>非线性：当激活函数是线性的时候，一个两层的神经网络就可以逼近基本上所有的函数了。但是，如果激活函数是恒等激活函数的时候，就不满足这个性质了，而且如果MLP使用的是恒等激活函数，那么其实整个网络跟单层神经网络是等价的。</li>
+<li>可微性：当优化方法是基于梯度的时候，这个性质是必须的。</li>
+<li>单调性：当激活函数是单调的时候，单层网络能够保证是凸函数。</li>
+<li>f(x)≈x： 当激活函数满足这个性质的时候，如果参数的初始化是random的很小的值，那么神经网络的训练将会很高效；如果不满足这个性质，那么就需要很用心的去设置初始值。</li>
+<li>输出值的范围： 当激活函数输出值是 有限 的时候，基于梯度的优化方法会更加 稳定，因为特征的表示受有限权值的影响更显著；当激活函数的输出是 无限 的时候，模型的训练会更加高效，不过在这种情况小，一般需要更小的learning rate.</li>
+<li>激活函数的选择：<ul>
+<li>ReLU: Rectified Linear Unit</li>
+<li>Leaky-ReLU</li>
+<li>PReLU: Parameteric Rectified Linear Unit</li>
+<li>ELU: Exponential Linear Unit</li>
+<li>Maxout</li>
+</ul>
+</li>
+<li>参考链接：<ul>
+<li><a href="http://blog.csdn.net/cyh_24/article/details/50593400" target="_blank" rel="external">http://blog.csdn.net/cyh_24/article/details/50593400</a></li>
+</ul>
+</li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Support Vector Machines]]></title>
+      <url>http://http://stayrascal.github.io/2016/04/29/Support-Vector-Machines/</url>
+      <content type="html"><![CDATA[<h3 id="支持向量机制"><a href="#支持向量机制" class="headerlink" title="支持向量机制"></a>支持向量机制</h3><ul>
+<li>优点：泛化错误率低，计算开销不大，结果易解释</li>
+<li>缺点：对参数调节和核函数的选择敏感，原始分类器不加修改仅适用于处理二类问题</li>
+<li>适用数据类型： 数值型和标称型数据</li>
+</ul>
+<h3 id="相关名词"><a href="#相关名词" class="headerlink" title="相关名词"></a>相关名词</h3><ul>
+<li>线性可分数据(linearly separable)：可以直接通过一种对象将数据分开</li>
+<li>分割超平面(separating hyperplane):如果数据集都在在二维平面上，分割超平面就只是一条曲线，如果数据集是三维的，分割超平面就是一个平面，如果数据集是1024维的，那么久需要一个1023维的对象来对数据进行分割</li>
+<li>间隔(margin)：数据集中的点到分隔面的距离，我们希望间隔仅可能地大，这是因为如果我们犯错或者在有限数据上训练分类器的话，我们希望分类器仅可能健壮</li>
+<li>支持向量(support vector)：离分隔平面最近的那些点。</li>
+</ul>
+<h4 id="寻找最大间隔"><a href="#寻找最大间隔" class="headerlink" title="寻找最大间隔"></a>寻找最大间隔</h4><p>分割超平面的形式可以写成WtX＋b，要计算点A到分隔超平面的距离，就必须给出点到分隔面的法线或垂线的长度，该值为|WtX+b|/||W||，这里的b类似Logistic回归中的截距w0</p>
+<h3 id="SVM的一般流程"><a href="#SVM的一般流程" class="headerlink" title="SVM的一般流程"></a>SVM的一般流程</h3><ul>
+<li>收集数据：可以使用任意方法</li>
+<li>准备数据：需要数值型数据</li>
+<li>分析数据：有助于可视化分隔超平面</li>
+<li>训练算法：SVM的大部分时间都源自训练，该过程主要实现两个参数的调优</li>
+<li>测试算法：十分简单的计算过程就可以实现</li>
+<li>使用算法：几乎所有分类问题都可以使用SVM，值得一提的是，SVM本身是一个二类分类器，对多类问题引用SVM需要对代码做一步修改</li>
+</ul>
+<h3 id="SMO高效优化算法-Sequential-Minimal-Optimization"><a href="#SMO高效优化算法-Sequential-Minimal-Optimization" class="headerlink" title="SMO高效优化算法(Sequential Minimal Optimization)"></a>SMO高效优化算法(Sequential Minimal Optimization)</h3><ul>
+<li>SMO表示序列最小优化，将大优化问题分解为多个小优化问题来求解的</li>
+<li>SMO算法的目标是求出一系列alpha和b，然后计算权重向量w并得到分隔超平面</li>
+<li>原理：每次循环中选择两个alpha进行优化处理，一旦找到一对合适的alpha，增大一个的同时减小另一个。“合适”指这两个alpha必须要在间隔边界之外，并且还没有进行过区间处理或者不在边界上</li>
+</ul>
+<h4 id="SMO的辅助函数"><a href="#SMO的辅助函数" class="headerlink" title="SMO的辅助函数"></a>SMO的辅助函数</h4><pre><code>def loadDataSet(fileName):
+    dataMat = []
+    labelMat = []
+    fr = open(fileName)
+    for line in fr.readlines():
+        lineArr = line.strip().split(&apos;\t&apos;)
+        dataMat.append([float(lineArr[0]), float(lineArr[1])])
+        labelMat.append(float(lineArr[2]))
+    return dataMat, labelMat
+
+
+# 随机选取一个小于size不等于inputNum的数
+def selectRand(inputNum, size):
+    result = inputNum
+    while result == inputNum:
+        result = int(random.uniform(0, size))
+    return result
+
+
+# 限制alpha的范围
+def clopAlpha(alpha, high, low):
+    if alpha &gt; high:
+        alpha = high
+    if alpha &lt; low:
+        alpha = low
+    return alpha
+</code></pre>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Logistic 回归]]></title>
+      <url>http://http://stayrascal.github.io/2016/04/28/Logistic-%E5%9B%9E%E5%BD%92/</url>
+      <content type="html"><![CDATA[<h2 id="Logistic-回归"><a href="#Logistic-回归" class="headerlink" title="Logistic 回归"></a>Logistic 回归</h2><ul>
+<li>优点：计算代价不高，易于理解和实现</li>
+<li>缺点：容易欠拟合，分类精度不高</li>
+<li>适用数据类型：数值型和标称型数据</li>
+</ul>
+<h3 id="Loggistic回归的一般流程"><a href="#Loggistic回归的一般流程" class="headerlink" title="Loggistic回归的一般流程"></a>Loggistic回归的一般流程</h3><ul>
+<li>收集数据：采用任意方法收集数据</li>
+<li>准备数据：由于需要进行距离计算，因此要求数据类型为数值型。另外，结构化数据格式则最佳。</li>
+<li>分析数据：采用任意方法对数据进行分析</li>
+<li>训练算法：大部分时间将用于训练，训练的目的是为了找到最佳的分类回归系数</li>
+<li>测试算法：一旦训练步骤完成，分类将会很快</li>
+<li>使用算法：首先需要输入一些数据，并将其转换成对应的结构化数值，然后基于训练好的回归系数就可以对这些数值进行简单的回归计算，判定它们属于哪个类别，最后就可以在输出的类别上做一些其他分析工作。</li>
+</ul>
+<h3 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h3><ul>
+<li>海维塞德阶跃函数(Heavuside step function)：又称单位阶跃函数，只输入0或1</li>
+<li>Sigmoid函数：f(z) = 1/(1+e^(-z)),z=0时，f＝0.5，随着z的增大，f逼近与1，随着z的减小，f逼近与0， 为了实现Logistic回归，将每个特征乘以一个回归系数，然后把所有结果值相加，带入Sigmoid函数中，得到的值大于0.5的数据分入1类，小于0.5的数据归入0类。</li>
+<li>梯度上升法：找到某函数的最大值，最好的方法是沿着函数的梯度方向寻找，即分别在每个点对应的每个方向上求偏导</li>
+</ul>
+<h3 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h3><h4 id="准备数据"><a href="#准备数据" class="headerlink" title="准备数据"></a>准备数据</h4><pre><code>def loadDataSet():
+    dataMat = []
+    labelMat = []
+    fr = open(&apos;testSet.txt&apos;)
+    for line in fr.readlines():
+        lineArr = line.strip().split()
+        dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])])
+        labelMat.append(int(lineArr[2]))
+    return dataMat, labelMat
+</code></pre><h4 id="分析数据"><a href="#分析数据" class="headerlink" title="分析数据"></a>分析数据</h4><p>Logistic回归梯度上升优化算法<br>    def sigmoid(inX):<br>        return 1.0 / (1 + exp(-inX))</p>
+<pre><code># dataMatIn 2维Numpy数组(100x3)
+# classLabels 类别标签(vector 1x100)
+def gradAscent(dataMatIn, classLabels):
+    # 转换维Numpy矩阵数据类型
+    dataMatrix = mat(dataMatIn)
+    # 将行向量转换维列向量
+    labelMat = mat(classLabels).transpose()
+
+    # 矩阵大小
+    m, n = shape(dataMatrix)
+    # 移动步长
+    alpha = 0.001
+    # 迭代次数
+    maxCycles = 500
+    weights = ones((n, 1))
+    for k in range(maxCycles):
+        h = sigmoid(dataMatrix * weights)
+        # 计算误差
+        error = labelMat - h
+        weights = weights + alpha * dataMatrix.transpose() * error
+    return weights
+
+
+def plotBestFit(weights):
+    import matplotlib.pylab as plt
+    dataMat, labelMat = loadDataSet()
+    dataArr = array(dataMat)
+    n = shape(dataArr)[0]
+
+    xcord1 = []
+    ycord1 = []
+    xcord2 = []
+    ycord2 = []
+
+    for i in range(n):
+        if int(labelMat[i]) == 1:
+            xcord1.append(dataArr[i, 1])
+            ycord1.append(dataArr[i, 2])
+        else:
+            xcord2.append(dataArr[i, 1])
+            ycord2.append(dataArr[i, 2])
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.scatter(xcord1, ycord1, s=30, c=&apos;red&apos;, marker=&apos;s&apos;)
+    ax.scatter(xcord2, ycord2, s=30, c=&apos;green&apos;)
+
+    x = arange(-3.0, 3.0, 0.1)
+    # 0 = w0x0 + w1x1+ w2x2
+    y = (-weights[0] - weights[1] * x) / weights[2]
+    ax.plot(x, y)
+    plt.xlabel(&apos;X1&apos;)
+    plt.ylabel(&apos;X2&apos;)
+    plt.show()
+</code></pre><p>从图像显示的分类结果来看，值分错了四个点，但是尽管例子简单且数据量很小，这个方法却需要大量的计算。</p>
+<h4 id="训练算法"><a href="#训练算法" class="headerlink" title="训练算法"></a>训练算法</h4><p>随机梯度上升算法，每次仅用一个样本点来更新回归系数，可以在新样本到来时对分类器进行增量式更新，避免梯度上升算法在每次更新回归系数时都需要遍历整个数据集。</p>
+<pre><code>def autoGradAscent0(dataMatrix, classLabels):
+    m, n = shape(dataMatrix)
+    alpha = 0.01
+    weights = ones(n)
+    for i in range(n):
+        h = sigmoid(sum(dataMatrix[i] * weights))
+        error = classLabels[i] - h
+        weights += alpha * error * dataMatrix[i]
+    return weights
+</code></pre><p>使用该算法分类结果不会像回归梯度算法那么完美，但评价一个优化算法优劣的可靠方法时看它是否收敛。<br>上述算法返回的回归系数在大的波动停止后，还有一些小的周期性波动，这是由于存在一些不能正确分类的样本点，在每次迭代时会引发系数的剧烈改变。<br>我们期望算法能避免来回波动，从而收敛到某个值，另外收敛速度也需要加快。<br>改进的随机梯度上升算法</p>
+<pre><code>def stocGradAscent1(dataMatrix, classLabels, numIter=150):
+    m, n = shape(dataMatrix)
+    weights = ones(n)  # initialize to all ones
+    for j in range(numIter):
+        dataIndex = list(range(m))
+        for i in range(m):
+            # alpha 在每次迭代的时候都会调整，缓解数据波动或者高频振动
+            alpha = 4 / (1.0 + j + i) + 0.0001  # apha decreases with iteration, does not
+            # 通过随机选取样本来更新回归系数,这种做法将减少周期性波动
+            randIndex = int(random.uniform(0, len(dataIndex)))  # go to 0 because of the constant
+            h = sigmoid(sum(dataMatrix[randIndex] * weights))
+            error = classLabels[randIndex] - h
+            weights += alpha * error * dataMatrix[randIndex]
+            del dataIndex[randIndex]
+    return weights
+</code></pre><p>使用改进的随机梯度算法后，不会出现回归系数随着迭代次数的周期性波动，归功于样本随机选择机制，其次回归系数收敛得更快。</p>
+<h4 id="使用算法"><a href="#使用算法" class="headerlink" title="使用算法"></a>使用算法</h4><p>从疝气病症预测病马的死亡率</p>
+<h5 id="处理数据中的缺失值"><a href="#处理数据中的缺失值" class="headerlink" title="处理数据中的缺失值"></a>处理数据中的缺失值</h5><ul>
+<li>使用可用特征的均值来填补缺失值</li>
+<li>使用特殊值来填补缺失值</li>
+<li>忽略有缺失值的样本</li>
+<li>使用相似样本的均值添补缺失值</li>
+<li>使用另外的机器学习算法缺失值</li>
+</ul>
+<h5 id="对数据进行预处理"><a href="#对数据进行预处理" class="headerlink" title="对数据进行预处理"></a>对数据进行预处理</h5><ul>
+<li>所有缺失值必须用一个是数值来替换，因为使用Numpy数据类型步允许包含缺失值，所以选择实数0来替换所有的缺失值，回归系数的更新公式：weights = weights = alpha <em> error </em> dataMatrix[randIndex]，如果dataMatrix的某特征值为0，则特征值的系数不做更新</li>
+<li>sigmoid(0)=0.5,它对结果的预测不具有任何倾向性</li>
+<li>如果在测试数据集中发现了一条数据的类别标签已经缺失，则将该条数据丢弃</li>
+</ul>
+<h5 id="测试算法"><a href="#测试算法" class="headerlink" title="测试算法"></a>测试算法</h5><pre><code>def classifyVector(inX, weights):
+    prob = sigmoid(sum(inX * weights))
+    if prob &gt; 0.5:
+        return 1.0
+    else:
+        return 0.0
+
+
+def colicTest():
+    frTrain = open(&apos;horseColicTraining.txt&apos;)
+    frTest = open(&apos;horseColicTest.txt&apos;)
+    trainingSet = []
+    trainingLabels = []
+    for line in frTrain.readlines():
+        currLine = line.strip().split(&apos;\t&apos;)
+        lineArr = []
+        for i in range(21):
+            lineArr.append(float(currLine[i]))
+        trainingSet.append(lineArr)
+        trainingLabels.append(float(currLine[21]))
+    trainWeights = stocGradAscent1(array(trainingSet), trainingLabels, 1000)
+
+    errorCount = 0
+    numTestVec = 0.0
+    for line in frTest.readlines():
+        numTestVec += 1.0
+        currLine = line.strip().split(&apos;\t&apos;)
+        lineArr = []
+        for i in range(21):
+            lineArr.append(float(currLine[i]))
+        if int(classifyVector(array(lineArr), trainWeights)) != int(currLine[21]):
+            errorCount += 1
+    errorRate = (float(errorCount) / numTestVec)
+    print(&quot;the error rate of this test is: %f&quot; % errorRate)
+    return errorRate
+
+
+def multiTest():
+    numTests = 10
+    errorSum = 0.0
+    for k in range(numTests):
+        errorSum += colicTest()
+    print(&quot;after %d iterations the average error rate is: %f&quot; % (numTests, errorSum / float(numTests)))
+</code></pre><p>从结果可以看到，10次迭代以后</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[bayes]]></title>
+      <url>http://http://stayrascal.github.io/2016/04/28/bayes/</url>
+      <content type="html"><![CDATA[<h3 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h3><ul>
+<li>优点：在数据较少的情况下仍然有效，可以处理多类别问题</li>
+<li>缺点：对于输入数据的准备方式较为敏感</li>
+<li>适用数据类型：标称型数据</li>
+</ul>
+<h3 id="相关知识点"><a href="#相关知识点" class="headerlink" title="相关知识点"></a>相关知识点</h3><ul>
+<li>贝叶斯决策理论：选择具有最高概率的决策</li>
+<li>条件概率：在某条件已经发生的情况下，计算另外一条件发生的概率 P(a|b) = P(a and b)/P(b)</li>
+<li>贝叶斯准则：P(c|x)P(x)=P(x|c)P(c)</li>
+</ul>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ul>
+<li>数据点(x, y)是属于c1类别还是属于c2类别主要通过比较P(c1|x, y)、P(c2|x, y)来决定</li>
+<li>从文本中获取特征，需要先拆分文本，这里的特征时来自文本的词条(token)，一个词条时字符的人一组合，然后将每一个文本片段表示为一个词条向量，其中值为1表示词条出现在文档中，0表示未出现</li>
+</ul>
+<h3 id="朴素贝叶斯的一般过程"><a href="#朴素贝叶斯的一般过程" class="headerlink" title="朴素贝叶斯的一般过程"></a>朴素贝叶斯的一般过程</h3><ul>
+<li>收集数据：可以使用任何方法，这是使用RSS源</li>
+<li>准备数据：需要数值型或者布尔型数据</li>
+<li>分析数据：有大量特征时，绘制特征作用不大，此时使用直方图效果更好</li>
+<li>训练算法：计算不同的独立特征的条件概率</li>
+<li>测试算法：计算错误率</li>
+<li>使用算法：一个常见的朴素贝叶斯应用时文档分类。可以在任意的分类场景中使用朴素贝叶斯分类器，不一定非要时文本</li>
+</ul>
+<h4 id="收集数据"><a href="#收集数据" class="headerlink" title="收集数据"></a>收集数据</h4><p>把文本看成单词向量</p>
+<pre><code>def loadDataSet():
+    # 进行词条切分后的文档集合
+    postingList = [[&apos;my&apos;, &apos;dog&apos;, &apos;has&apos;, &apos;flea&apos;, &apos;problems&apos;, &apos;help&apos;, &apos;please&apos;],
+                   [&apos;maybe&apos;, &apos;not&apos;, &apos;take&apos;, &apos;him&apos;, &apos;to&apos;, &apos;dog&apos;, &apos;park&apos;, &apos;stupid&apos;],
+                   [&apos;my&apos;, &apos;dalmation&apos;, &apos;is&apos;, &apos;so&apos;, &apos;cute&apos;, &apos;I&apos;, &apos;love&apos;, &apos;him&apos;],
+                   [&apos;stop&apos;, &apos;posting&apos;, &apos;stupid&apos;, &apos;worthless&apos;, &apos;garbage&apos;],
+                   [&apos;mr&apos;, &apos;licks&apos;, &apos;ate&apos;, &apos;my&apos;, &apos;steak&apos;, &apos;how&apos;, &apos;to&apos;, &apos;stop&apos;, &apos;him&apos;],
+                   [&apos;quit&apos;, &apos;buying&apos;, &apos;worthless&apos;, &apos;dog&apos;, &apos;food&apos;, &apos;stupid&apos;]]
+    classVec = [0, 1, 0, 1, 0, 1]  # 1代表侮辱性文字，0代表正常言论
+    return postingList, classVec
+</code></pre><h4 id="准备数据"><a href="#准备数据" class="headerlink" title="准备数据"></a>准备数据</h4><p>词集模型：将每个词的出现与否作为一个特征，创建一个包含所有文档中出现的不重复词的列表</p>
+<pre><code>def createVocabList(dataSet):
+    # 创建一个空集
+    vocabSet = set([])
+    for document in dataSet:
+        # 创建两个集合的并集
+        vocabSet = vocabSet | set(document)
+    return list(vocabSet)
+</code></pre><p>将文本单词向量转化为0和1类型的数值向量，分别代表对应单词在总单词列表中是否出现</p>
+<pre><code># vocabList 词汇表
+# inputSet 输入文档
+def setOfWords2Vec(vocabList, inputSet):
+    # 创建一个其中所含元素都为0的向量
+    returnVec = [0] * len(vocabList)
+    for word in inputSet:
+        if word in vocabList:
+            returnVec[vocabList.index(word)] = 1
+        else:
+            print(&quot;the word: %s is not in my Vocabulary!&quot; % word)
+    return returnVec
+</code></pre><p>词袋模型：针对一个词在文档中不止出现一次。<br>为了适应词袋模型，需要对函数setOfWords2Vec()稍加修改</p>
+<pre><code># vocabList 词汇表
+# inputSet 输入文档
+def bagOfWords2VecMN(vocabList, inputSet):
+    # 创建一个其中所含元素都为0的向量
+    returnVec = [0] * len(vocabList)
+    for word in inputSet:
+        if word in vocabList:
+            returnVec[vocabList.index(word)] += 1
+    return returnVec
+</code></pre><h4 id="训练算法"><a href="#训练算法" class="headerlink" title="训练算法"></a>训练算法</h4><p>从词向量计算计算概率,计算文档中各单词在各类别中的概率(通过某单词出现的次数除以对应类别所有单词总数)</p>
+<pre><code># trainMatrix 文档矩阵
+# trainCategory 每篇文档类别所构成的向量
+def trainNBO(trainMatrix, trainCategory):
+    numTrainDocs = len(trainMatrix)
+    numWords = len(trainMatrix[0])
+    pAbusive = sum(trainCategory) / float(numTrainDocs)
+    # 初始化分子变量
+    p0Num = zeros(numWords)
+    p1Num = zeros(numWords)
+    # 初始化分母变量
+    p0Denom = 0.0
+    p1Denom = 0.0
+    for i in range(numTrainDocs):
+         ＃根据文档类别统计各单词在每个类别中出现的次数以及该类别总次数
+        if trainCategory[i] == 1:
+            p1Num += trainMatrix[i]
+            p1Denom += sum(trainMatrix[i])
+        else:
+            p0Num += trainMatrix[i]
+            p0Denom += sum(trainMatrix[i])
+    p1Vect = p1Num / p1Denom
+    p0Vect = p0Num / p0Denom
+    return p0Vect, p1Vect, pAbusive
+</code></pre><h4 id="测试算法"><a href="#测试算法" class="headerlink" title="测试算法"></a>测试算法</h4><p>利用贝叶斯分类器对文档进行分类时，要计算多个概率的乘积以获得文档属于某个类别的概率，即计算P(w0|1)P(w1|1)P(w2|1)…P(wn|1)。如果其中一个概率值为0，那么最后的乘积也为0。为了降低这种影响，可以将所有的词出现的初始化为1，并将分母化为2。即修改代码：</p>
+<pre><code># 初始化分子变量
+p0Num = ones(numWords)
+p1Num = ones(numWords)
+# 初始化分母变量
+p0Denom = 2.0
+p1Denom = 2.0
+</code></pre><p>另外一个问题时下溢出，这是由于太多很小的数相乘造成的。一种解决办法是对乘积取自然对数。在代数中有ln(a*b) = ln(a) + ln(b)，采用自然对数进行处理不会有任何损失。即修改代码：</p>
+<pre><code>p1Vect = log(p1Num / p1Denom)
+p0Vect = log(p0Num / p0Denom)
+</code></pre><p>朴素贝叶斯分类函数</p>
+<pre><code># vec2Classify 要分类的向量
+def classifyNB(vec2Classify, p0Vec, p1Vec, pClass):
+    # 元素相乘
+    # log(P(w0|1)P(w1|1)....P(1)) = sum(log(P(wi|1))) + log(P(1))
+    p1 = sum(vec2Classify * p1Vec) + log(pClass)
+    p0 = sum(vec2Classify * p0Vec) + log(1.0 - pClass)
+    if p1 &gt; p0:
+        return 1
+    else:
+        return 0
+
+
+def testingNB():
+    listOPosts, listClasses = loadDataSet()
+    myVocabList = createVocabList(listOPosts)
+    trainMat = []
+    for postinDoc in listOPosts:
+        trainMat.append(setOfWords2Vec(myVocabList, postinDoc))
+    p0V, p1V, pAb = trainNBO(trainMat, listClasses)
+
+    testEntry = [&apos;love&apos;, &apos;my&apos;, &apos;dalmation&apos;]
+    thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
+    print(testEntry, &apos;classified as: &apos;, classifyNB(thisDoc, p0V, p1V, pAb))
+
+    testEntry = [&apos;stupid&apos;, &apos;garbage&apos;]
+    thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
+    print(testEntry, &apos;classified as: &apos;, classifyNB(thisDoc, p0V, p1V, pAb))
+</code></pre><h4 id="使用算法"><a href="#使用算法" class="headerlink" title="使用算法"></a>使用算法</h4><h5 id="切分文本"><a href="#切分文本" class="headerlink" title="切分文本"></a>切分文本</h5><pre><code>def textParse(bigString):
+    import re
+    listOfToken = re.split(r&apos;\W+&apos;, bigString)
+    return [token.lower() for token in listOfToken if len(token) &gt; 2]
+</code></pre><h4 id="使用朴素贝叶斯进行交叉验证"><a href="#使用朴素贝叶斯进行交叉验证" class="headerlink" title="使用朴素贝叶斯进行交叉验证"></a>使用朴素贝叶斯进行交叉验证</h4><pre><code>def spamTest():
+    docList = []
+    classList = []
+    fullText = []
+
+    # 导入并解析文本文件
+    for i in range(1, 26):
+        wordList = textParse(open(&apos;email/ham/%d.txt&apos; % i, encoding=&apos;latin1&apos;).read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(0)
+
+        wordList = textParse(open(&apos;email/spam/%d.txt&apos; % i, encoding=&apos;latin1&apos;).read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(1)
+
+    vocabList = createVocabList(docList)
+
+    # 留存交叉验证(hold-out cross validation)
+
+    # 从两个文件中总共获取50封邮件
+    trainingSet = list(range(50))
+
+    # 从50封邮件里面随机选取10封邮件,将它们的索引号保存在testSet里面去,并从trainingSet里面删除对应索引
+    testSet = []
+    for i in range(10):
+        randIndex = int(random.uniform(0, len(trainingSet)))
+        testSet.append(trainingSet[randIndex])
+        del trainingSet[randIndex]
+
+    # 从docList里面选取trainingSet剩余索引对应的数据集作为训练集
+    trainMat = []
+    trainClass = []
+    for docIndex in trainingSet:
+        trainMat.append(setOfWords2Vec(vocabList, docList[docIndex]))
+        trainClass.append(classList[docIndex])
+
+    p0V, p1V, pSpam = trainNBO(array(trainMat), array(trainClass))
+
+    errorCount = 0
+    for docIndex in testSet:
+        wordVector = setOfWords2Vec(vocabList, docList[docIndex])
+        if classifyNB(array(wordVector), p0V, p1V, pSpam) != classList[docIndex]:
+            errorCount += 1
+    print(&apos;the error rate is: &apos;, float(errorCount) / len(testSet))
+</code></pre><p>如何想要更好地估计错误率，需要将这个过程重复多次，然后求其平均</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[decision-making tree]]></title>
+      <url>http://http://stayrascal.github.io/2016/04/27/decision-making-tree/</url>
+      <content type="html"><![CDATA[<h3 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h3><ul>
+<li>优点：计算复杂度不高，输出结果易于理解，对中间值的缺失不敏感，可以处理不相关特征数据</li>
+<li>缺点：可能会产生过度匹配问题</li>
+<li>适用数据字典：数值型和标称型</li>
+<li>相关算法：ID3、C4.5、CART</li>
+</ul>
+<h3 id="一般流程"><a href="#一般流程" class="headerlink" title="一般流程"></a>一般流程</h3><ul>
+<li>收集数据：可以使用任何方法</li>
+<li>准备数据：树构造算法只适用于标称型数据，因此数值型数据必须离散化</li>
+<li>分析数据：可以使用任何方法，构造树完成后，应该检查图形是否符合预期</li>
+<li>训练算法：构造的数据结构</li>
+<li>测试算法：使用经验树计算错误率</li>
+<li>使用算法：此步骤可以适用于任何监督学习算法，而使用决策树可以更好地理解数据的内在含义。</li>
+</ul>
+<h3 id="相关名词"><a href="#相关名词" class="headerlink" title="相关名词"></a>相关名词</h3><ul>
+<li>信息增益(information gain)：划分数据前后信息发生的变化</li>
+<li>香农熵(熵entropy)：集合信息的度量方式，熵定义为信息的期望值，符号Xi的信息定义为l(Xi)=-log2P(Xi),P(Xi)表示选取该分类的概率</li>
+<li>基尼不纯度(Gini impurity)：从一个数据集中随机选取子项，度量其被错误分类到其它分组里面的概率</li>
+</ul>
+<h3 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h3><h4 id="计算香农熵"><a href="#计算香农熵" class="headerlink" title="计算香农熵"></a>计算香农熵</h4><p>熵越高，表明混合的数据越多</p>
+<pre><code># 计算香农熵
+def calcShannonEnt(dataSet):
+    # 计算数据集中实例的总数
+    numEntries = len(dataSet)
+    # 创建一个数据字典，用它的键值记录最后一列的值
+    labelCounts = {}
+    for featVec in dataSet:
+        currentLabel = featVec[-1]
+        if currentLabel not in labelCounts.keys():
+            labelCounts[currentLabel] = 0
+        labelCounts[currentLabel] += 1
+
+    shannonEnt = 0.0
+    for key in labelCounts:
+        # 计算类别出现的概率
+        prob = float(labelCounts[key]) / numEntries
+        # 计算香农熵
+        shannonEnt -= prob * log(prob, 2)
+    return shannonEnt
+</code></pre><h4 id="按照获取最大信息增益的方法划分数据"><a href="#按照获取最大信息增益的方法划分数据" class="headerlink" title="按照获取最大信息增益的方法划分数据"></a>按照获取最大信息增益的方法划分数据</h4><p>对每个特征划分数据集的结果计算一次信息熵，判断哪个特征划分数据集时最好的划分方式。</p>
+<p>按照给定的特征划分数据：</p>
+<pre><code># dataSet 待划分的数据集
+# axis    划分数据集的特征
+# value   特征的返回值
+def splitDataSet(dataSet, axis, value):
+    # 创建新的list对象
+    retDataSet = []
+    for featVec in dataSet:
+        if featVec[axis] == value:
+            reducedFeatVec = featVec[:axis]
+            reducedFeatVec.extend(featVec[axis + 1:])
+            retDataSet.append(reducedFeatVec)
+    return retDataSet
+</code></pre><p>遍历整个数据集，循环计算香农熵和splitDataSet()函数，找到最好的特征划分方式。</p>
+<pre><code>def chooseBestFeatureToSplit(dataSet):
+    # 获取当前数据集特征属性个数
+    numFeatures = len(dataSet[0]) - 1
+    # 计算原始香农熵
+    baseEntropy = calcShannonEnt(dataSet)
+    # 原始信息增益值
+    bestInfoGain = 0.0
+    bestFeature = -1
+    for i in range(numFeatures):
+        # 创建唯一的分类标签列表(将数据集中所有第i个特征或者所有可能存在的值写入这个新list中)
+        featList = [example[i] for example in dataSet]
+        uniqueVals = set(featList)
+        newEntropy = 0.0
+
+        # 遍历当前特征中的所有唯一属性值
+        for value in uniqueVals:
+            # 对每个特征划分一次数据集
+            subDataSet = splitDataSet(dataSet, i, value)
+            prob = len(subDataSet) / float(len(dataSet))
+            # 计算新熵值
+            newEntropy += prob * calcShannonEnt(subDataSet)
+        infoGain = baseEntropy - newEntropy
+        if infoGain &gt; bestInfoGain:
+            bestInfoGain = infoGain
+            bestFeature = i
+    return bestFeature
+</code></pre><h4 id="采用递归的原则处理数据集"><a href="#采用递归的原则处理数据集" class="headerlink" title="采用递归的原则处理数据集"></a>采用递归的原则处理数据集</h4><p>递归结束条件：程序遍历完所有划分数据集的属性，或者每个分支的所有实例都具有相同的分类。如果所有实例具有相同的分类，则得到一个叶子节点或者终止块。</p>
+<pre><code># dataSet 数据集
+# labels  标签列表:包含了数据集中所有特征的标签
+def createTree(dataSet, labels):
+    # 创建一个包含了数据集所有类标签的列表变量
+    classList = [example[-1] for example in dataSet]
+
+    # 第一个停止条件：所有的类标签完全相同
+    if classList.count(classList[0]) == len(classList):
+        return classList[0]
+
+    # 第二个停止条件：使用完所有特征，仍然不能将数据集划分成仅包含唯一类别的分组，挑选出现次数最多的类别作为返回指
+    if len(dataSet[0]) == 1:
+        return majorityCnt(classList)
+
+    bestFeat = chooseBestFeatureToSplit(dataSet)
+    bestFeatLabel = labels[bestFeat]
+
+    # 创建树
+    myTree = {bestFeatLabel: {}}
+    del (labels[bestFeat])
+    featValues = [example[bestFeat] for example in dataSet]
+    uniqueVals = set(featValues)
+    for value in uniqueVals:
+        # 复制类标签
+        subLabels = labels[:]
+        subDataSet = splitDataSet(dataSet, bestFeat, value)
+        myTree[bestFeatLabel][value] = createTree(subDataSet, subLabels)
+    return myTree
+</code></pre><p>有些时候数据集已经处理了所有属性，但是类标签依然不是唯一的，此时通常采用多数表决的方法决定该叶子节点的分类。</p>
+<pre><code># 多数表决
+def majorityCnt(classList):
+    classCount = {}
+    for vote in classList:
+        if vote not in classCount.keys():
+            classCount[vote] = 0
+        classCount[vote] += 1
+    sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
+    return sortedClassCount[0][0]
+</code></pre><h4 id="测试算法"><a href="#测试算法" class="headerlink" title="测试算法"></a>测试算法</h4><pre><code>def classify(inputTree, featLabels, testVec):
+    firstStr = inputTree.keys()[0]
+    secondDict = inputTree[firstStr]
+
+    # 将标签字符串转换为索引
+    featIndex = featLabels.index(firstStr)
+    for key in secondDict.keys():
+        if testVec[featIndex] == key:
+            if type(secondDict[key]).__name__ == &apos;dict&apos;:
+                classLabel = classify(secondDict[key], featLabels, testVec)
+            else:
+                classLabel = secondDict[key]
+    return classLabel
+</code></pre><h4 id="使用算法"><a href="#使用算法" class="headerlink" title="使用算法"></a>使用算法</h4><p>构造决策树很耗时，所以一般序列化对象，并保存在磁盘上，并在需要的时候读取出来。</p>
+<pre><code>def storeTree(inputTree, filename):
+    import pickle
+    fw = open(filename, &apos;wb&apos;)
+    pickle.dump(inputTree, fw)
+    fw.close()
+
+
+def grabTree(filename):
+    import pickle
+    fr = open(filename, &apos;rb&apos;)
+    return pickle.load(fr)
+</code></pre><h4 id="使用决策树预测隐形眼镜类型"><a href="#使用决策树预测隐形眼镜类型" class="headerlink" title="使用决策树预测隐形眼镜类型"></a>使用决策树预测隐形眼镜类型</h4><pre><code>def main(filename):
+    fr = open(filename)
+    lenses = [inst.strip().split(&apos;\t&apos;) for inst in fr.readlines()]
+    lensesLabels = [&apos;age&apos;, &apos;prescript&apos;, &apos;astigmatic&apos;, &apos;tearRate&apos;]
+    lensesTree = createTree(lenses, lensesLabels)
+    return lensesTree
+</code></pre><h4 id="绘制图像"><a href="#绘制图像" class="headerlink" title="绘制图像"></a>绘制图像</h4><pre><code>import matplotlib.pyplot as plt
+
+# 定义文本框和箭头符号(定义树节点格式的常量)
+decisionNode = dict(boxstyle=&quot;sawtooth&quot;, fc=&quot;0.8&quot;)
+leafNode = dict(boxstyle=&quot;round4&quot;, fc=&quot;0.8&quot;)
+arrow_args = dict(arrowstyle=&quot;&lt;-&quot;)
+
+
+# 绘制带箭头的注解
+def plotNode(nodeText, centerPt, parentPt, nodeType):
+    createPlot.ax1.annotate(nodeText, xy=parentPt, xycoords=&apos;axes fraction&apos;, xytext=centerPt,
+                            textcoords=&apos;axes fraction&apos;,
+                            va=&quot;center&quot;, ha=&quot;center&quot;, bbox=nodeType, arrowprops=arrow_args)
+
+
+# 获取叶节点的数目
+def getNumLeafs(myTree):
+    numLeafs = 0
+    firstStr = list(myTree)[0]
+    secondDict = myTree[firstStr]
+    for key in secondDict.keys():
+        if type(secondDict[key]).__name__ == &apos;dict&apos;:
+            numLeafs += getNumLeafs(secondDict[key])
+        else:
+            numLeafs += 1
+    return numLeafs
+
+
+def getTreeDepth(myTree):
+    maxPath = 0
+    firstStr = list(myTree)[0]
+    secondDict = myTree[firstStr]
+    for key in secondDict.keys():
+        if type(secondDict[key]).__name__ == &apos;dict&apos;:
+            thisDepth = 1 + getTreeDepth(secondDict[key])
+        else:
+            thisDepth = 1
+        if thisDepth &gt; maxPath:
+            maxPath = thisDepth
+    return maxPath
+
+
+# 在父子节点间填充文本信息
+def plotMidText(centerPt, parentPt, txtString):
+    xMid = (parentPt[0] - centerPt[0]) / 2.0 + centerPt[0]
+    yMid = (parentPt[1] - centerPt[1]) / 2.0 + centerPt[1]
+    createPlot.ax1.text(xMid, yMid, txtString)
+
+
+def plotTree(myTree, parentPt, nodeText):
+    # 计算宽和高
+    numLeafs = getNumLeafs(myTree)
+    depth = getTreeDepth(myTree)
+
+    firstStr = list(myTree)[0]
+
+    # 通过计算树所有叶子节点数，划分图形的高度，从而计算当前节点的中心位置
+    centerPt = (plotTree.xOff + (1.0 + float(numLeafs)) / 2.0 / plotTree.totalW, plotTree.yOff)
+
+    # 计算父节点和子节点的中间位置，并在此处添加文本标签信息
+    plotMidText(centerPt, parentPt, nodeText)
+    plotNode(firstStr, centerPt, parentPt, decisionNode)
+    secondDict = myTree[firstStr]
+
+    # 按比例减少全局变量
+    plotTree.yOff -= 1.0 / plotTree.totalD
+    for key in secondDict.keys():
+        if type(secondDict[key]).__name__ == &apos;dict&apos;:
+            plotTree(secondDict[key], centerPt, str(key))
+        else:
+            plotTree.xOff += 1.0 / plotTree.totalW
+            plotNode(secondDict[key], (plotTree.xOff, plotTree.yOff), centerPt, leafNode)
+            plotMidText((plotTree.xOff, plotTree.yOff), centerPt, str(key))
+    plotTree.yOff += 1.0 / plotTree.totalD
+
+
+def createPlot(inTree):
+    fig = plt.figure(1, facecolor=&apos;white&apos;)
+    fig.clf()
+    axpros = dict(xticks=[], yticks=[])
+    createPlot.ax1 = plt.subplot(111, frameon=False, **axpros)
+
+    # 使用下列两个变量计算树节点的摆放位置，这样可以将树绘制在水平方向和垂直方向的中心位置
+    plotTree.totalW = float(getNumLeafs(inTree))  # 存储树的宽度
+    plotTree.totalD = float(getTreeDepth(inTree))  # 存储树的高度
+
+    # 追踪已经绘制的节点位置，以及放置下一个节点的恰当位置
+    plotTree.xOff = -0.5 / plotTree.totalW
+    plotTree.yOff = 1.0
+
+    plotTree(inTree, (0.5, 1.0), &apos;&apos;)
+    plt.show()
+</code></pre>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[KNN]]></title>
+      <url>http://http://stayrascal.github.io/2016/04/27/KNN/</url>
+      <content type="html"><![CDATA[<h3 id="k-近邻算法"><a href="#k-近邻算法" class="headerlink" title="k-近邻算法"></a>k-近邻算法</h3><ul>
+<li>优点：进度高、对异常值不敏感、无数据输入假定</li>
+<li>缺点：计算复杂度高、空间复杂度高</li>
+<li>适用数据范围：数值型和标称型</li>
+</ul>
+<h3 id="一般流程"><a href="#一般流程" class="headerlink" title="一般流程"></a>一般流程</h3><ul>
+<li>收集数据：可以使用任何方法</li>
+<li>准备数据：距离计算所需要的数值，最好是结构化的数据格式</li>
+<li>分析数据：可是使用任何方法</li>
+<li>训练算法：此步骤不适用于k－近邻算法</li>
+<li>测试算法：计算错误率</li>
+<li>使用算法：首先需要输入样本数据和结构化的输出结果，然后运行k－近邻算法判定输入数据分别属于哪个分类，最后应用对计算出的分类执行后续的处理</li>
+</ul>
+<h3 id="从文本文件中解析数据"><a href="#从文本文件中解析数据" class="headerlink" title="从文本文件中解析数据"></a>从文本文件中解析数据</h3><ul>
+<li>计算已知类别数据集中的点与当前点之间的距离</li>
+<li>按照距离按递增次序依次排序</li>
+<li>选取与当前点距离最小的k个点</li>
+<li>返回前k个点出现频率最高的类别作为当前点的预测分类。</li>
+</ul>
+<h3 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h3><p>一般根据特性的不同，采用不同的度量方式，我们一般通过距离来表示个体之间差异的大小。而距离又分很多种，最基础的就是闵可夫斯基距离，而我们经常听说的欧几里得距离、曼哈顿距离和切别学夫距离分别是其对应的特俗情况，除此之外还有马斯距离(等高线)、汉明距离（两个字符串其中一个变为另外一个所需要作的最小替换次数）、编辑距离（两个字符串之间由一个转成另一个最小编辑次数）、DTW距离(Dynamic Time Warp)等，在本例中，我们利用最简单的欧式距离计算待分类的向量与训练样本集的距离。</p>
+<pre><code># inX: 用于分类的输入向量
+# dataSet: 训练样本集
+# labels: 标签向量
+# k: 最邻近的数目
+def classify(inX, dataSet, labels, k):
+    # 获取矩阵的行数
+    dataSetSize = dataSet.shape[0]
+    # tile(inX, (dataSetSize, 1)) 将inX这个行向量复制为与dataSet同维度的矩阵
+    diffMat = tile(inX, (dataSetSize, 1)) - dataSet
+    # 将矩阵里每一个元素乘以本身
+    sqDiffMat = diffMat ** 2
+    # 把矩阵的每一行相加，得到一个列向量
+    sqDistances = sqDiffMat.sum(axis=1)
+    # 将列向量的每一个元素开平方
+    distances = sqDistances ** 0.5
+    # 把列向量按照升序的形式进行排序，并以排序前各元素对应的索引的形式返回
+    sortedDistIndicies = distances.argsort()
+    return getBestLabel(k, labels, sortedDistIndicies)
+
+
+def getBestLabel(k, labels, sortedDistIndicies):
+    classCount = {}
+    for i in range(k):
+        # 获取对应元素中的标记
+        voteIlabel = labels[sortedDistIndicies[i]]
+        # 查询classCount中是否存在这个标记，如未存在，把该标记数的数目设为1，否则加1
+        classCount[voteIlabel] = classCount.get(voteIlabel, 0) + 1
+
+    # 对classCount这个dict根据value( key=operator.itemgetter(1))降序（默认升序，因为reverse=True，所以降序）
+    sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
+    return sortedClassCount[0][0]
+</code></pre><h3 id="测试算法"><a href="#测试算法" class="headerlink" title="测试算法"></a>测试算法</h3><p>根据提供的数据datingTestSet.txt（一个包含4列的测试数据，前三列表示三类特征，最后一列表示标签），计算算法的出错率。通过计算，算法的出错率为24%，这是因为在计算距离时，使用欧式距离公式，不同维度的特征值可能会对其它特征值产生影响，我们可以通过归一化数据矩阵来消除这种影响，算法优化后，算法的出错率降低到了5%，有很大的提升。</p>
+<pre><code>def datingClassTest(hoRatio=0.1, k=3):
+    # 将文件转换为矩阵
+    datingDataMat, datingLabels = fileToMatrix(&apos;datingTestSet.txt&apos;)
+    # 归一化矩阵
+    normMat, ranges, minVals = autoNorm(datingDataMat)
+    # 获取矩阵的行数
+    m = normMat.shape[0]
+    # 测试算法的数据条数
+    numTestVecs = int(m * hoRatio)
+    errorCount = 0
+    for i in range(numTestVecs):
+        classifierResult = classify(normMat[i, :], normMat[numTestVecs:m, :], datingLabels[numTestVecs:m], k)
+        print(&quot;the classifier came back with: %d, the real answer is: %d&quot; % (classifierResult, datingLabels[i]))
+        if classifierResult != datingLabels[i]:
+            errorCount += 1
+    print(&quot;the total error rate is %f&quot; % (errorCount / float(numTestVecs)))
+    return errorCount, numTestVecs
+
+def fileToMatrix(fileName):
+    # 打开文件
+    fr = open(fileName)
+    # 获取内容行数列表
+    arrayOlines = fr.readlines()
+    # 行数数目
+    numberOfLines = len(arrayOlines)
+    # 建立一个与内容同行3列的零矩阵
+    returnMat = zeros((numberOfLines, 3))
+    classLabelVector = []
+    index = 0
+    # 遍历每行内容
+    for line in arrayOlines:
+        # 去除第i行内容的回车符
+        line = line.strip()
+        # 根据Tab符号划分成对应的数组
+        listFromLine = line.split(&apos;\t&apos;)
+        # 将划分后的数组的前三个元素赋值给零矩阵的第i行
+        returnMat[index, :] = listFromLine[0:3]
+        # 将划分后的数组的最后一个元素添加到Label数组中
+        classLabelVector.append(int(listFromLine[-1]))
+        index += 1
+        # 返回生成的矩阵和标签数组
+    return returnMat, classLabelVector
+</code></pre><h3 id="优化算法"><a href="#优化算法" class="headerlink" title="优化算法"></a>优化算法</h3><p>由于在计算距离的时候采用的是欧式距离，针对不同维度的特征值差异可能导致某个维度对另外一个维度有较大影响。如计算（0，20000，1.1）与（76， 320000，0.1）的距离时，第二个特征值会起主导作用，计算结果几乎忽略了第三个特征值的作用，而实际上，这三个特征值时同等重要的。所以我们需要对数据集进行归一化处理。</p>
+<pre><code>def autoNorm(dataSet):
+    # 返回矩阵中每列中最小元素组成的行向量
+    minVals = dataSet.min(0) 
+    # 返回矩阵中没列中最大元素组成的行向量
+    maxVals = dataSet.max(0) 
+    # 返回两个向量之差
+    ranges = maxVals - minVals
+
+    # 建立与dataSet同维度的零矩阵
+    normDataSet = zeros(shape(dataSet))
+    # 矩阵的行数
+    m = dataSet.shape[0]
+
+    # 原矩阵减去由最小值向量复制生成的同维度矩阵
+    normDataSet = dataSet - tile(minVals, (m, 1))
+
+    # 处理后的矩阵与最大最小差量复制而成的同维度矩阵的特征值相除
+    normDateSet = normDataSet / tile(ranges, (m, 1))  # eigenvalue division
+    return normDataSet, ranges, minVals
+</code></pre><h3 id="使用算法"><a href="#使用算法" class="headerlink" title="使用算法"></a>使用算法</h3><h4 id="约会网站预测"><a href="#约会网站预测" class="headerlink" title="约会网站预测"></a>约会网站预测</h4><pre><code>def classifyPerson():
+    resultList = [&apos;not at all&apos;, &apos;in small doses&apos;, &apos;in large doses&apos;]
+    percentTats = float(input(&quot;percentage of time spent playing video games?&quot;))
+    ffMiles = float(input(&quot;frequent flier miles earned per year?&quot;))
+    iceCream = float(input(&quot;liters of ice cream consumed per year?&quot;))
+    # 文件转换为矩阵
+    datingDataMat, datingLabels = fileToMatrix(&apos;datingTestSet.txt&apos;)
+    # 归一化矩阵
+    normMat, ranges, minVals = autoNorm(datingDataMat)
+    # 测试数据
+    inArr = array([ffMiles, percentTats, iceCream])
+    classifierResult = classify((inArr - minVals) / ranges, normMat, datingLabels, 3)
+    print(&quot;You will probably like this person: &quot;, resultList[classifierResult - 1])
+</code></pre><h4 id="手写识别系统"><a href="#手写识别系统" class="headerlink" title="手写识别系统"></a>手写识别系统</h4><p>将实际图像以二进制（32x32）的形式存储在一个txt文件中，先编写一个函数img2vector，将图像转化为向量：</p>
+<pre><code>def imgToVector(fileName):
+    # 建立1024列行向量
+    returnVect = zeros((1, 1024))
+    # 打开32x32像素的文件
+    fr = open(fileName)
+    for i in range(32):
+        # 读取第i行
+        lineStr = fr.readline()
+        for j in range(32):
+            # 将第i行的第j个元素负责给行向量
+            returnVect[0, 32 * i + j] = int(lineStr[j])
+    return returnVect
+</code></pre><p>再根据训练数据使用算法识别测试数据：</p>
+<pre><code>def handwritingClassTest():
+trainingMat, hwLabels = getTrainingMatAndLabel()
+
+testFileNameList = listdir(&apos;testDigits&apos;)
+errorCount = 0.0
+mTest = len(testFileNameList)
+for i in range(mTest):
+    fileNameStr = testFileNameList[i]
+    fileStr = fileNameStr.split(&apos;.&apos;)[0]
+    classNumStr = int(fileStr.split(&apos;_&apos;)[0])
+    vectorUnderTest = imgToVector(&apos;testDigits/%s&apos; % fileNameStr)
+
+    classifierResult = classify(vectorUnderTest, trainingMat, hwLabels, 3)
+    # print(&quot;the classifier came back with: %d, the real answer is: %d&quot; % (classifierResult, classNumStr))
+    if classifierResult != classNumStr:
+        errorCount += 1.0
+print(&quot;\nthe total number of errors is: %d&quot; % errorCount)
+print(&quot;\nthe total error rate is: %f&quot; % (errorCount / float(mTest)))
+
+
+def getTrainingMatAndLabel():
+    hwLabels = []
+    # 获取trainingDigits文件夹下面的文件列表
+    trainFileNameList = listdir(&apos;trainingDigits&apos;)
+    m = len(trainFileNameList)
+    trainingMat = zeros((m, 1024))
+    for i in range(m):
+        # 获取第i个文件
+        fileNameStr = trainFileNameList[i]
+        # 获取文件名
+        fileStr = fileNameStr.split(&apos;.&apos;)[0]
+        # 获取数字（Label）
+        classNumStr = int(fileStr.split(&apos;_&apos;)[0])
+        hwLabels.append(classNumStr)
+        # 将第i个文件的内容添加到矩阵中
+        trainingMat[i, :] = imgToVector(&apos;trainingDigits/%s&apos; % fileNameStr)
+    return trainingMat, hwLabels
+</code></pre>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Spring Data JPA Tutorial]]></title>
+      <url>http://http://stayrascal.github.io/2016/04/25/Spring-Data-JPA-Tutorial/</url>
+      <content type="html"><![CDATA[<p>使用Java Persistence API创建仓库是一个很笨重的过程，不仅需要花费大量的时间而且还产生了大量的重复代码。我们可以通过如下几个步骤消除重复的代码：</p>
+<ul>
+<li>创建一个抽象的基本仓库，提供了基本的CRUD操作</li>
+<li>创建具体的仓库去继承上述基本仓库</li>
+</ul>
+<p>但是还有一个问题是我们仍然需要编写一些关于数据库查询的方法并调用它们，更糟糕的是，我们不得不做同样的事情当我们创建一个新的数据库查询的时候。这简直就是在浪费时间，幸好Spring Data JPA可以解决这个问题。</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Bash Keyboard Shortcuts]]></title>
+      <url>http://http://stayrascal.github.io/2016/04/24/bash_keyboard_shortcuts/</url>
+      <content type="html"><![CDATA[<h2 id="Moving-the-cursor"><a href="#Moving-the-cursor" class="headerlink" title="Moving the cursor:"></a>Moving the cursor:</h2><pre><code>Ctrl + a  Go to the beginning of the line (Home)
+Ctrl + e  Go to the end of the line (End)
+Ctrl + p  Previous command (Up arrow)
+Ctrl + n  Next command (Down arrow)
+alt  + f  Forward (right) one word
+Alt  + b  Back (left) one word
+Ctrl + b  Backward one character
+Ctrl + f  Forward one character
+Ctrl + xx Toggle between the start of line and current cursor position
+</code></pre><h2 id="Editing"><a href="#Editing" class="headerlink" title="Editing:"></a>Editing:</h2><pre><code>Ctrl + L  Clear the screen, similar to the clear command
+Alt  + Del  Delete the word before the cursor
+Alt  + d  Delete the world after the cursor
+Ctrl + d  Delete character under the cursor
+Ctrl + h  Delete character before the cursor (Backspace)
+
+Ctrl + w  Cut the word before the cursor to the clipboard
+Ctrl + k  Cut the line after the cusor to the clipboard
+Ctrl + u  Cut/delete the line before the before the cursor to the clipboard
+
+Alt  + t  Swap current word with previous
+Ctrl + t  Swap the last two characters before the cursor (typo)
+Esc  + t  Swap the last two words before the cursor
+
+Ctrl + y  Paste the last thing to be cut (yank)
+Alt  + u  upper capitalize every character from the cursor to the end of the current word
+Alt  + l  Lower the case of every character from the cursor to the end of the current word
+Alt  + c  Capitalize the character under the cursor and move to the end of the word
+Alt  + r  Cancle the changes and put back the line as it was in the history (revert)
+Ctrl + _ Undo
+</code></pre><h2 id="History"><a href="#History" class="headerlink" title="History:"></a>History:</h2><pre><code>Ctrl + r  Recall the last command including the specified characters searches the command history as you type.
+Ctrl + p  Previoush command in history
+Ctrl + n  Next command in history
+
+Ctrl + s  Go back to the next most recent command
+Ctrl + o  Execute the command found via Ctrl+r or Ctrl+s
+Ctrl + g  Escape from history searching mode
+</code></pre><h2 id="Process-control"><a href="#Process-control" class="headerlink" title="Process control:"></a>Process control:</h2><pre><code>Ctrl + C  Interrupt/Kill whatever you are running
+Ctrl + l  Clear the screen
+Ctrl + s  Stop output to the screen
+Ctrl + q  Allow output to the screen
+Ctrl + D  Send an EOF marker, unless disabled by an option, this will close the current hsell
+Ctrl + Z  Send the signal Sigtetp to the current task, which suspends it.
+</code></pre>]]></content>
+    </entry>
+    
+  
+  
+</search>

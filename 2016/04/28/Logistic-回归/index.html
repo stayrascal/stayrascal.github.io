@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Stay Rascal" />
+
+
+
+<meta name="description" content="根据现有数据对分类边界线建立回归公式，以此进行分类。“回归”一词源于最佳拟合，表示要找到最佳拟合参数集。训练分类器时的做法就是寻找最佳拟合参数，使用的是最优化解法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logistic 回归">
+<meta property="og:url" content="http://http://stayrascal.github.io/2016/04/28/Logistic-回归/index.html">
+<meta property="og:site_name" content="Stay Hungery, Stay Foolish">
+<meta property="og:description" content="根据现有数据对分类边界线建立回归公式，以此进行分类。“回归”一词源于最佳拟合，表示要找到最佳拟合参数集。训练分类器时的做法就是寻找最佳拟合参数，使用的是最优化解法。">
+<meta property="og:updated_time" content="2017-01-24T11:20:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Logistic 回归">
+<meta name="twitter:description" content="根据现有数据对分类边界线建立回归公式，以此进行分类。“回归”一词源于最佳拟合，表示要找到最佳拟合参数集。训练分类器时的做法就是寻找最佳拟合参数，使用的是最优化解法。">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Stay Hungery, Stay Foolish" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Logistic 回归 | Stay Hungery, Stay Foolish</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Stay Rascal</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="true" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>Menu</li>
+                        <li>Tags</li>
+                        
+                        <li>Friends</li>
+                        
+                        
+                        <li>About Me</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:stayrascal@gmail.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/stayrascal" title="GitHub"></a>
+                            
+                                <a class="fa V2EX" href="#" title="V2EX"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="/zhihu" title="知乎"></a>
+                            
+                                <a class="fa 豆瓣" href="/douban" title="豆瓣"></a>
+                            
+                                <a class="fa 简书" href="/jianshu" title="简书"></a>
+                            
+                                <a class="fa Google" href="#" title="Google"></a>
+                            
+                                <a class="fa 微信" href="/Wechat" title="微信"></a>
+                            
+                                <a class="fa Instagram" href="#" title="Instagram"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcuts/">Shortcuts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-JPA/">Spring Data JPA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Stay Rascal</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Stay Rascal</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:stayrascal@gmail.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/stayrascal" title="GitHub"></a>
+                            
+                                <a class="fa V2EX" target="_blank" href="#" title="V2EX"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="/zhihu" title="知乎"></a>
+                            
+                                <a class="fa 豆瓣" target="_blank" href="/douban" title="豆瓣"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="/jianshu" title="简书"></a>
+                            
+                                <a class="fa Google" target="_blank" href="#" title="Google"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="/Wechat" title="微信"></a>
+                            
+                                <a class="fa Instagram" target="_blank" href="#" title="Instagram"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
+</nav>
+      <div class="body-wrap"><article id="post-Logistic-回归" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/28/Logistic-回归/" class="article-date">
+      <time datetime="2016-04-28T14:50:17.000Z" itemprop="datePublished">2016-04-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Logistic 回归
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="Logistic-回归"><a href="#Logistic-回归" class="headerlink" title="Logistic 回归"></a>Logistic 回归</h2><ul>
+<li>优点：计算代价不高，易于理解和实现</li>
+<li>缺点：容易欠拟合，分类精度不高</li>
+<li>适用数据类型：数值型和标称型数据</li>
+</ul>
+<h3 id="Loggistic回归的一般流程"><a href="#Loggistic回归的一般流程" class="headerlink" title="Loggistic回归的一般流程"></a>Loggistic回归的一般流程</h3><ul>
+<li>收集数据：采用任意方法收集数据</li>
+<li>准备数据：由于需要进行距离计算，因此要求数据类型为数值型。另外，结构化数据格式则最佳。</li>
+<li>分析数据：采用任意方法对数据进行分析</li>
+<li>训练算法：大部分时间将用于训练，训练的目的是为了找到最佳的分类回归系数</li>
+<li>测试算法：一旦训练步骤完成，分类将会很快</li>
+<li>使用算法：首先需要输入一些数据，并将其转换成对应的结构化数值，然后基于训练好的回归系数就可以对这些数值进行简单的回归计算，判定它们属于哪个类别，最后就可以在输出的类别上做一些其他分析工作。</li>
+</ul>
+<h3 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h3><ul>
+<li>海维塞德阶跃函数(Heavuside step function)：又称单位阶跃函数，只输入0或1</li>
+<li>Sigmoid函数：f(z) = 1/(1+e^(-z)),z=0时，f＝0.5，随着z的增大，f逼近与1，随着z的减小，f逼近与0， 为了实现Logistic回归，将每个特征乘以一个回归系数，然后把所有结果值相加，带入Sigmoid函数中，得到的值大于0.5的数据分入1类，小于0.5的数据归入0类。</li>
+<li>梯度上升法：找到某函数的最大值，最好的方法是沿着函数的梯度方向寻找，即分别在每个点对应的每个方向上求偏导</li>
+</ul>
+<h3 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h3><h4 id="准备数据"><a href="#准备数据" class="headerlink" title="准备数据"></a>准备数据</h4><pre><code>def loadDataSet():
+    dataMat = []
+    labelMat = []
+    fr = open(&apos;testSet.txt&apos;)
+    for line in fr.readlines():
+        lineArr = line.strip().split()
+        dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])])
+        labelMat.append(int(lineArr[2]))
+    return dataMat, labelMat
+</code></pre><h4 id="分析数据"><a href="#分析数据" class="headerlink" title="分析数据"></a>分析数据</h4><p>Logistic回归梯度上升优化算法<br>    def sigmoid(inX):<br>        return 1.0 / (1 + exp(-inX))</p>
+<pre><code># dataMatIn 2维Numpy数组(100x3)
+# classLabels 类别标签(vector 1x100)
+def gradAscent(dataMatIn, classLabels):
+    # 转换维Numpy矩阵数据类型
+    dataMatrix = mat(dataMatIn)
+    # 将行向量转换维列向量
+    labelMat = mat(classLabels).transpose()
+
+    # 矩阵大小
+    m, n = shape(dataMatrix)
+    # 移动步长
+    alpha = 0.001
+    # 迭代次数
+    maxCycles = 500
+    weights = ones((n, 1))
+    for k in range(maxCycles):
+        h = sigmoid(dataMatrix * weights)
+        # 计算误差
+        error = labelMat - h
+        weights = weights + alpha * dataMatrix.transpose() * error
+    return weights
+
+
+def plotBestFit(weights):
+    import matplotlib.pylab as plt
+    dataMat, labelMat = loadDataSet()
+    dataArr = array(dataMat)
+    n = shape(dataArr)[0]
+
+    xcord1 = []
+    ycord1 = []
+    xcord2 = []
+    ycord2 = []
+
+    for i in range(n):
+        if int(labelMat[i]) == 1:
+            xcord1.append(dataArr[i, 1])
+            ycord1.append(dataArr[i, 2])
+        else:
+            xcord2.append(dataArr[i, 1])
+            ycord2.append(dataArr[i, 2])
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.scatter(xcord1, ycord1, s=30, c=&apos;red&apos;, marker=&apos;s&apos;)
+    ax.scatter(xcord2, ycord2, s=30, c=&apos;green&apos;)
+
+    x = arange(-3.0, 3.0, 0.1)
+    # 0 = w0x0 + w1x1+ w2x2
+    y = (-weights[0] - weights[1] * x) / weights[2]
+    ax.plot(x, y)
+    plt.xlabel(&apos;X1&apos;)
+    plt.ylabel(&apos;X2&apos;)
+    plt.show()
+</code></pre><p>从图像显示的分类结果来看，值分错了四个点，但是尽管例子简单且数据量很小，这个方法却需要大量的计算。</p>
+<h4 id="训练算法"><a href="#训练算法" class="headerlink" title="训练算法"></a>训练算法</h4><p>随机梯度上升算法，每次仅用一个样本点来更新回归系数，可以在新样本到来时对分类器进行增量式更新，避免梯度上升算法在每次更新回归系数时都需要遍历整个数据集。</p>
+<pre><code>def autoGradAscent0(dataMatrix, classLabels):
+    m, n = shape(dataMatrix)
+    alpha = 0.01
+    weights = ones(n)
+    for i in range(n):
+        h = sigmoid(sum(dataMatrix[i] * weights))
+        error = classLabels[i] - h
+        weights += alpha * error * dataMatrix[i]
+    return weights
+</code></pre><p>使用该算法分类结果不会像回归梯度算法那么完美，但评价一个优化算法优劣的可靠方法时看它是否收敛。<br>上述算法返回的回归系数在大的波动停止后，还有一些小的周期性波动，这是由于存在一些不能正确分类的样本点，在每次迭代时会引发系数的剧烈改变。<br>我们期望算法能避免来回波动，从而收敛到某个值，另外收敛速度也需要加快。<br>改进的随机梯度上升算法</p>
+<pre><code>def stocGradAscent1(dataMatrix, classLabels, numIter=150):
+    m, n = shape(dataMatrix)
+    weights = ones(n)  # initialize to all ones
+    for j in range(numIter):
+        dataIndex = list(range(m))
+        for i in range(m):
+            # alpha 在每次迭代的时候都会调整，缓解数据波动或者高频振动
+            alpha = 4 / (1.0 + j + i) + 0.0001  # apha decreases with iteration, does not
+            # 通过随机选取样本来更新回归系数,这种做法将减少周期性波动
+            randIndex = int(random.uniform(0, len(dataIndex)))  # go to 0 because of the constant
+            h = sigmoid(sum(dataMatrix[randIndex] * weights))
+            error = classLabels[randIndex] - h
+            weights += alpha * error * dataMatrix[randIndex]
+            del dataIndex[randIndex]
+    return weights
+</code></pre><p>使用改进的随机梯度算法后，不会出现回归系数随着迭代次数的周期性波动，归功于样本随机选择机制，其次回归系数收敛得更快。</p>
+<h4 id="使用算法"><a href="#使用算法" class="headerlink" title="使用算法"></a>使用算法</h4><p>从疝气病症预测病马的死亡率</p>
+<h5 id="处理数据中的缺失值"><a href="#处理数据中的缺失值" class="headerlink" title="处理数据中的缺失值"></a>处理数据中的缺失值</h5><ul>
+<li>使用可用特征的均值来填补缺失值</li>
+<li>使用特殊值来填补缺失值</li>
+<li>忽略有缺失值的样本</li>
+<li>使用相似样本的均值添补缺失值</li>
+<li>使用另外的机器学习算法缺失值</li>
+</ul>
+<h5 id="对数据进行预处理"><a href="#对数据进行预处理" class="headerlink" title="对数据进行预处理"></a>对数据进行预处理</h5><ul>
+<li>所有缺失值必须用一个是数值来替换，因为使用Numpy数据类型步允许包含缺失值，所以选择实数0来替换所有的缺失值，回归系数的更新公式：weights = weights = alpha <em> error </em> dataMatrix[randIndex]，如果dataMatrix的某特征值为0，则特征值的系数不做更新</li>
+<li>sigmoid(0)=0.5,它对结果的预测不具有任何倾向性</li>
+<li>如果在测试数据集中发现了一条数据的类别标签已经缺失，则将该条数据丢弃</li>
+</ul>
+<h5 id="测试算法"><a href="#测试算法" class="headerlink" title="测试算法"></a>测试算法</h5><pre><code>def classifyVector(inX, weights):
+    prob = sigmoid(sum(inX * weights))
+    if prob &gt; 0.5:
+        return 1.0
+    else:
+        return 0.0
+
+
+def colicTest():
+    frTrain = open(&apos;horseColicTraining.txt&apos;)
+    frTest = open(&apos;horseColicTest.txt&apos;)
+    trainingSet = []
+    trainingLabels = []
+    for line in frTrain.readlines():
+        currLine = line.strip().split(&apos;\t&apos;)
+        lineArr = []
+        for i in range(21):
+            lineArr.append(float(currLine[i]))
+        trainingSet.append(lineArr)
+        trainingLabels.append(float(currLine[21]))
+    trainWeights = stocGradAscent1(array(trainingSet), trainingLabels, 1000)
+
+    errorCount = 0
+    numTestVec = 0.0
+    for line in frTest.readlines():
+        numTestVec += 1.0
+        currLine = line.strip().split(&apos;\t&apos;)
+        lineArr = []
+        for i in range(21):
+            lineArr.append(float(currLine[i]))
+        if int(classifyVector(array(lineArr), trainWeights)) != int(currLine[21]):
+            errorCount += 1
+    errorRate = (float(errorCount) / numTestVec)
+    print(&quot;the error rate of this test is: %f&quot; % errorRate)
+    return errorRate
+
+
+def multiTest():
+    numTests = 10
+    errorSum = 0.0
+    for k in range(numTests):
+        errorSum += colicTest()
+    print(&quot;after %d iterations the average error rate is: %f&quot; % (numTests, errorSum / float(numTests)))
+</code></pre><p>从结果可以看到，10次迭代以后</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/04/29/Support-Vector-Machines/">
+                    Support Vector Machines
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/04/28/bayes/">
+                    bayes
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Logistic-回归"><span class="toc-number">1.</span> <span class="toc-text">Logistic 回归</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Loggistic回归的一般流程"><span class="toc-number">1.1.</span> <span class="toc-text">Loggistic回归的一般流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#相关知识"><span class="toc-number">1.2.</span> <span class="toc-text">相关知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Algorithm"><span class="toc-number">1.3.</span> <span class="toc-text">Algorithm</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#准备数据"><span class="toc-number">1.3.1.</span> <span class="toc-text">准备数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分析数据"><span class="toc-number">1.3.2.</span> <span class="toc-text">分析数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#训练算法"><span class="toc-number">1.3.3.</span> <span class="toc-text">训练算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用算法"><span class="toc-number">1.3.4.</span> <span class="toc-text">使用算法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#处理数据中的缺失值"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">处理数据中的缺失值</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#对数据进行预处理"><span class="toc-number">1.3.4.2.</span> <span class="toc-text">对数据进行预处理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#测试算法"><span class="toc-number">1.3.4.3.</span> <span class="toc-text">测试算法</span></a></li></ol></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="Hide"  title="Show or Hide Table of Contents">
+
+    <script>
+        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Logistic 回归　| Stay Hungery, Stay Foolish　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/04/29/Support-Vector-Machines/" title="Pre: Support Vector Machines">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/04/28/bayes/" title="Next: bayes">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/03/01/Deep-Learning/">Deep Learning</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/29/Support-Vector-Machines/">Support Vector Machines</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/28/Logistic-回归/">Logistic 回归</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/28/bayes/">bayes</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/27/decision-making-tree/">decision-making tree</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/27/KNN/">KNN</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/25/Spring-Data-JPA-Tutorial/">Spring Data JPA Tutorial</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/24/bash_keyboard_shortcuts/">Bash Keyboard Shortcuts</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 Stay Rascal
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="Site Visitors"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="Page Hits"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 2;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="Comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
