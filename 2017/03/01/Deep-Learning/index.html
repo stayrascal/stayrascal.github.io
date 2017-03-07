@@ -21,7 +21,7 @@
 <meta property="og:url" content="http://stayrascal.github.io/2017/03/01/Deep-Learning/index.html">
 <meta property="og:site_name" content="Stay Hungery, Stay Foolish">
 <meta property="og:description" content="common question">
-<meta property="og:updated_time" content="2017-03-07T13:21:43.000Z">
+<meta property="og:updated_time" content="2017-03-07T13:50:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Deep Learning">
 <meta name="twitter:description" content="common question">
@@ -440,6 +440,85 @@
 </ul>
 </li>
 </ul>
+<h2 id="如何训练深度神经网络"><a href="#如何训练深度神经网络" class="headerlink" title="如何训练深度神经网络"></a>如何训练深度神经网络</h2><ul>
+<li>训练数据:<ul>
+<li>获取越大的数据库越好。DNN 对数据很饥渴，越多越好</li>
+<li>去除所有包含损坏数据的训练样本，比如短文字，高度扭曲的图像，假输出标签，包含许多虚值（null values）的属性。</li>
+<li>Data Augmentation（数据扩张）——生成新样例。以图像为例，重新调节，增加噪声等等</li>
+</ul>
+</li>
+<li>选择恰当的激活函数<ul>
+<li>Sigmoid 函数不可避免地存在两个缺陷：<ul>
+<li>尾部sigmoids的饱和，进一步导致梯度消失</li>
+<li>不以 0 为中心（输出在 0 到 1 之间）</li>
+</ul>
+</li>
+<li>参考上面的<code>为什么要使用激活函数</code></li>
+</ul>
+</li>
+<li>隐藏单元和隐层（Hidden Units and Layers）的数量<ul>
+<li>保留超出最优数量的隐藏单元，一般是比较保险的做法。<ul>
+<li>任何正则化方法（ regularization method）都会处理好超出的单元，至少在某种程度上是这样</li>
+<li>保留比最优数量更少的隐藏单元，会导致更高的模型欠拟合（underfitting）几率。</li>
+<li>当采用无监督预训练的表示时（unsupervised pre-trained representations，下文会做进一步解释），隐藏单元的最优数目一般会变得更大。因此，预训练的表示可能会包含许多不相关信息（对于特定任务）。</li>
+<li>通过增加隐藏单元的数目，模型会得到所需的灵活性，以在预训练表示中过滤出最合适的信息。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>权重初始化<ul>
+<li>永远用小的随机数字初始化权重，以打破不同单元间的对称性（symmetry）.<ul>
+<li>当使用 Sigmoid 激励函数时，如果权重初始化为很大的数字，那么 sigmoid 会饱和（尾部区域），导致死神经元（dead neurons）。如果权重特别小，梯度也会很小。因此，最好是在中间区域选择权重，比如说那些围绕平均值均衡分布的数值。</li>
+<li>对于 tanh 激励  <code>r=sqrt(6/(fan_in+fan_out))</code></li>
+<li>对于 sigmoid 激励 <code>r=4*(sqrt(6/fan_in+fan_out))</code> 。fan_in 是上一层的大小， 而 fan_out 是下一层的。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>学习率<ul>
+<li>如果学习率设置得太小，你的模型很可能需要 n 年来收敛。设置得太大，再加上不多的初始训练样本，你的损失可能会极高。一般来说，0.01 的学习率比较保险。</li>
+<li>相比固定学习率，在每个周期、或每几千个样例后逐渐降低学习率是另一个选择。</li>
+<li>基于误差函数的曲率来调整学习率</li>
+<li>优化方法的研究，导致了自适应学习率：<ul>
+<li>老式动能方法（ Momentum Method ）</li>
+<li>Adagrad、Adam：能替我们省去人工选择初始学习率的麻烦；给定合适的时间，模型会开始平滑地收敛</li>
+<li>RMSProp</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>超参数调参：扔掉网格搜索，拥抱随机搜索<ul>
+<li>取决于经验，可以人工对部分常见超参数调参，比如学习率、隐层数目。</li>
+<li>采用随机搜索（random search），或者随机采样代替网格搜索，来选择最优超参数</li>
+</ul>
+</li>
+<li>权重的维度保持为 2 的幂<ul>
+<li>内存管理在字节（byte）级别上进行。所以，把参数保持在 64, 128, 512, 1024 等 2 的次方也许能帮助分割矩阵和权重，导致学习效率的提升。当用 GPU 运算，这变得更明显。</li>
+</ul>
+</li>
+<li>Mini-Batch（小批量） 对比随机学习（Stochastic Learning）<ul>
+<li>训练中加入的噪音使得模型更不容易过拟合。</li>
+</ul>
+</li>
+<li>打乱训练样本<ul>
+<li>把训练样例的顺序随机化（在不同周期，或者 mini-batch），会导致更快的收敛。如果模型看到的很多样例不在同一种顺序下，运算速度会有小幅提升。</li>
+</ul>
+</li>
+<li>使用 Dropout 正则化<ul>
+<li>0.5 的默认值是一个不错的选择，当然，这取决于具体任务。如果模型不太复杂，0.2 的 Dropout 值或许就够了。</li>
+<li>在测试阶段，Dropout 应该被关闭，权重要调整到相应大小。只要对一个模型进行 Dropout 正则化，多一点训练时间，误差一定会降低。</li>
+</ul>
+</li>
+<li>周期 / 训练迭代次数<ul>
+<li>继续按照一个固定的样例数或者周期训练模型，比如两万个样例或者一个周期。在每批样例之后，比较测试误差（test error）和训练误差（train error），如果它们的差距在缩小，那么继续训练。</li>
+<li>在每批训练之后，保存模型的参数，所以训练好之后你可以从多个模型中做选择。</li>
+</ul>
+</li>
+<li>可视化<ul>
+<li>保存或打印损失值、训练误差、测试误差等项目的日志。</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -466,7 +545,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权重初始化"><span class="toc-number"></span> <span class="toc-text">权重初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number"></span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度下降"><span class="toc-number"></span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用激活函数"><span class="toc-number"></span> <span class="toc-text">为什么要使用激活函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归的正则化"><span class="toc-number"></span> <span class="toc-text">逻辑回归的正则化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度神经网络压缩"><span class="toc-number"></span> <span class="toc-text">深度神经网络压缩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AlexNet"><span class="toc-number"></span> <span class="toc-text">AlexNet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度信念网络"><span class="toc-number"></span> <span class="toc-text">深度信念网络</span></a>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权重初始化"><span class="toc-number"></span> <span class="toc-text">权重初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number"></span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度下降"><span class="toc-number"></span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用激活函数"><span class="toc-number"></span> <span class="toc-text">为什么要使用激活函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归的正则化"><span class="toc-number"></span> <span class="toc-text">逻辑回归的正则化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度神经网络压缩"><span class="toc-number"></span> <span class="toc-text">深度神经网络压缩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AlexNet"><span class="toc-number"></span> <span class="toc-text">AlexNet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度信念网络"><span class="toc-number"></span> <span class="toc-text">深度信念网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何训练深度神经网络"><span class="toc-number"></span> <span class="toc-text">如何训练深度神经网络</span></a>
         
     </div>
     <style>
