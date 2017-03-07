@@ -18,10 +18,10 @@
 <meta name="description" content="common question">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Deep Learning">
-<meta property="og:url" content="http://http://stayrascal.github.io/2017/03/01/Deep-Learning/index.html">
+<meta property="og:url" content="http://stayrascal.github.io/2017/03/01/Deep-Learning/index.html">
 <meta property="og:site_name" content="Stay Hungery, Stay Foolish">
 <meta property="og:description" content="common question">
-<meta property="og:updated_time" content="2017-03-06T09:33:40.000Z">
+<meta property="og:updated_time" content="2017-03-07T12:56:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Deep Learning">
 <meta name="twitter:description" content="common question">
@@ -394,6 +394,25 @@
 </ul>
 </li>
 </ul>
+<h2 id="逻辑回归的正则化"><a href="#逻辑回归的正则化" class="headerlink" title="逻辑回归的正则化"></a>逻辑回归的正则化</h2><ul>
+<li>通过惩罚过大的参数来防止过拟合: <code>J(w)=&gt;J(w)+λ||w||p</code></li>
+<li>L1 会趋向于产生少量的特征，而其他的特征都是0，而 L2 会选择更多的特征，这些特征都会接近于0。</li>
+<li>L1范数：是指向量中各个元素绝对值之和，也有个美称叫“稀疏规则算子”（Lasso regularization）<ul>
+<li>它能实现 特征的自动选择。</li>
+<li>一般来说，大部分特征 xi和输出 yi 之间并没有多大关系。在最小化目标函数的时候考虑到这些额外的特征 xi，虽然可以获得更小的训练误差，但在预测新的样本时，这些没用的信息反而会干扰了对正确 yi 的预测。稀疏规则化算子的引入就是为了完成特征自动选择的光荣使命，它会学习地去掉这些没有信息的特征，也就是把这些特征对应的权重置为0。</li>
+</ul>
+</li>
+<li>L2范数：它有两个美称，在回归里面，有人把有它的回归叫“岭回归”（Ridge Regression），有人也叫它“权值衰减”(weight decay)。<ul>
+<li>它的强大之处就是它能 解决过拟合 问题。我们让 L2 范数的规则项 ||w||2 最小，可以使得 w 的每个元素都很小，都接近于0，但与 L1 范数不同，它不会让它等于0，而是接近于0，这里还是有很大区别的。而越小的参数说明模型越简单，越简单的模型则越不容易产生过拟合现象。</li>
+</ul>
+</li>
+</ul>
+<h2 id="深度神经网络压缩"><a href="#深度神经网络压缩" class="headerlink" title="深度神经网络压缩"></a>深度神经网络压缩</h2><ul>
+<li>Prunes the network：只保留一些重要的连接</li>
+<li>Quantize the weights：通过权值量化来共享一些weights</li>
+<li>Huffman coding：通过霍夫曼编码进一步压缩</li>
+<li>link：<a href="http://blog.csdn.net/cyh_24/article/details/51708469" target="_blank" rel="external">http://blog.csdn.net/cyh_24/article/details/51708469</a></li>
+</ul>
 
       
     </div>
@@ -420,7 +439,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权重初始化"><span class="toc-number"></span> <span class="toc-text">权重初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number"></span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度下降"><span class="toc-number"></span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用激活函数"><span class="toc-number"></span> <span class="toc-text">为什么要使用激活函数</span></a>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权重初始化"><span class="toc-number"></span> <span class="toc-text">权重初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number"></span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度下降"><span class="toc-number"></span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用激活函数"><span class="toc-number"></span> <span class="toc-text">为什么要使用激活函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归的正则化"><span class="toc-number"></span> <span class="toc-text">逻辑回归的正则化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度神经网络压缩"><span class="toc-number"></span> <span class="toc-text">深度神经网络压缩</span></a>
         
     </div>
     <style>

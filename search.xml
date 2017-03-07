@@ -5,7 +5,7 @@
     
     <entry>
       <title><![CDATA[Deep Learning]]></title>
-      <url>http://http://stayrascal.github.io/2017/03/01/Deep-Learning/</url>
+      <url>http://stayrascal.github.io/2017/03/01/Deep-Learning/</url>
       <content type="html"><![CDATA[<h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><hr>
 <h2 id="权重初始化"><a href="#权重初始化" class="headerlink" title="权重初始化"></a>权重初始化</h2><ul>
 <li>权重初始化并不等价于权重随机初始化</li>
@@ -67,12 +67,31 @@
 </ul>
 </li>
 </ul>
+<h2 id="逻辑回归的正则化"><a href="#逻辑回归的正则化" class="headerlink" title="逻辑回归的正则化"></a>逻辑回归的正则化</h2><ul>
+<li>通过惩罚过大的参数来防止过拟合: <code>J(w)=&gt;J(w)+λ||w||p</code></li>
+<li>L1 会趋向于产生少量的特征，而其他的特征都是0，而 L2 会选择更多的特征，这些特征都会接近于0。</li>
+<li>L1范数：是指向量中各个元素绝对值之和，也有个美称叫“稀疏规则算子”（Lasso regularization）<ul>
+<li>它能实现 特征的自动选择。</li>
+<li>一般来说，大部分特征 xi和输出 yi 之间并没有多大关系。在最小化目标函数的时候考虑到这些额外的特征 xi，虽然可以获得更小的训练误差，但在预测新的样本时，这些没用的信息反而会干扰了对正确 yi 的预测。稀疏规则化算子的引入就是为了完成特征自动选择的光荣使命，它会学习地去掉这些没有信息的特征，也就是把这些特征对应的权重置为0。</li>
+</ul>
+</li>
+<li>L2范数：它有两个美称，在回归里面，有人把有它的回归叫“岭回归”（Ridge Regression），有人也叫它“权值衰减”(weight decay)。<ul>
+<li>它的强大之处就是它能 解决过拟合 问题。我们让 L2 范数的规则项 ||w||2 最小，可以使得 w 的每个元素都很小，都接近于0，但与 L1 范数不同，它不会让它等于0，而是接近于0，这里还是有很大区别的。而越小的参数说明模型越简单，越简单的模型则越不容易产生过拟合现象。</li>
+</ul>
+</li>
+</ul>
+<h2 id="深度神经网络压缩"><a href="#深度神经网络压缩" class="headerlink" title="深度神经网络压缩"></a>深度神经网络压缩</h2><ul>
+<li>Prunes the network：只保留一些重要的连接</li>
+<li>Quantize the weights：通过权值量化来共享一些weights</li>
+<li>Huffman coding：通过霍夫曼编码进一步压缩</li>
+<li>link：<a href="http://blog.csdn.net/cyh_24/article/details/51708469" target="_blank" rel="external">http://blog.csdn.net/cyh_24/article/details/51708469</a></li>
+</ul>
 ]]></content>
     </entry>
     
     <entry>
       <title><![CDATA[Support Vector Machines]]></title>
-      <url>http://http://stayrascal.github.io/2016/04/29/Support-Vector-Machines/</url>
+      <url>http://stayrascal.github.io/2016/04/29/Support-Vector-Machines/</url>
       <content type="html"><![CDATA[<h3 id="支持向量机制"><a href="#支持向量机制" class="headerlink" title="支持向量机制"></a>支持向量机制</h3><ul>
 <li>优点：泛化错误率低，计算开销不大，结果易解释</li>
 <li>缺点：对参数调节和核函数的选择敏感，原始分类器不加修改仅适用于处理二类问题</li>
@@ -129,7 +148,7 @@ def clopAlpha(alpha, high, low):
     
     <entry>
       <title><![CDATA[Logistic 回归]]></title>
-      <url>http://http://stayrascal.github.io/2016/04/28/Logistic-%E5%9B%9E%E5%BD%92/</url>
+      <url>http://stayrascal.github.io/2016/04/28/Logistic-%E5%9B%9E%E5%BD%92/</url>
       <content type="html"><![CDATA[<h2 id="Logistic-回归"><a href="#Logistic-回归" class="headerlink" title="Logistic 回归"></a>Logistic 回归</h2><ul>
 <li>优点：计算代价不高，易于理解和实现</li>
 <li>缺点：容易欠拟合，分类精度不高</li>
@@ -302,7 +321,7 @@ def multiTest():
     
     <entry>
       <title><![CDATA[bayes]]></title>
-      <url>http://http://stayrascal.github.io/2016/04/28/bayes/</url>
+      <url>http://stayrascal.github.io/2016/04/28/bayes/</url>
       <content type="html"><![CDATA[<h3 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h3><ul>
 <li>优点：在数据较少的情况下仍然有效，可以处理多类别问题</li>
 <li>缺点：对于输入数据的准备方式较为敏感</li>
@@ -484,7 +503,7 @@ def testingNB():
     
     <entry>
       <title><![CDATA[decision-making tree]]></title>
-      <url>http://http://stayrascal.github.io/2016/04/27/decision-making-tree/</url>
+      <url>http://stayrascal.github.io/2016/04/27/decision-making-tree/</url>
       <content type="html"><![CDATA[<h3 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h3><ul>
 <li>优点：计算复杂度不高，输出结果易于理解，对中间值的缺失不敏感，可以处理不相关特征数据</li>
 <li>缺点：可能会产生过度匹配问题</li>
@@ -732,7 +751,7 @@ def createPlot(inTree):
     
     <entry>
       <title><![CDATA[KNN]]></title>
-      <url>http://http://stayrascal.github.io/2016/04/27/KNN/</url>
+      <url>http://stayrascal.github.io/2016/04/27/KNN/</url>
       <content type="html"><![CDATA[<h3 id="k-近邻算法"><a href="#k-近邻算法" class="headerlink" title="k-近邻算法"></a>k-近邻算法</h3><ul>
 <li>优点：进度高、对异常值不敏感、无数据输入假定</li>
 <li>缺点：计算复杂度高、空间复杂度高</li>
@@ -916,7 +935,7 @@ def getTrainingMatAndLabel():
     
     <entry>
       <title><![CDATA[Spring Data JPA Tutorial]]></title>
-      <url>http://http://stayrascal.github.io/2016/04/25/Spring-Data-JPA-Tutorial/</url>
+      <url>http://stayrascal.github.io/2016/04/25/Spring-Data-JPA-Tutorial/</url>
       <content type="html"><![CDATA[<p>使用Java Persistence API创建仓库是一个很笨重的过程，不仅需要花费大量的时间而且还产生了大量的重复代码。我们可以通过如下几个步骤消除重复的代码：</p>
 <ul>
 <li>创建一个抽象的基本仓库，提供了基本的CRUD操作</li>
@@ -928,7 +947,7 @@ def getTrainingMatAndLabel():
     
     <entry>
       <title><![CDATA[Bash Keyboard Shortcuts]]></title>
-      <url>http://http://stayrascal.github.io/2016/04/24/bash_keyboard_shortcuts/</url>
+      <url>http://stayrascal.github.io/2016/04/24/bash_keyboard_shortcuts/</url>
       <content type="html"><![CDATA[<h2 id="Moving-the-cursor"><a href="#Moving-the-cursor" class="headerlink" title="Moving the cursor:"></a>Moving the cursor:</h2><pre><code>Ctrl + a  Go to the beginning of the line (Home)
 Ctrl + e  Go to the end of the line (End)
 Ctrl + p  Previous command (Up arrow)
