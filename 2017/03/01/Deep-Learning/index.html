@@ -21,7 +21,7 @@
 <meta property="og:url" content="http://stayrascal.github.io/2017/03/01/Deep-Learning/index.html">
 <meta property="og:site_name" content="Stay Hungery, Stay Foolish">
 <meta property="og:description" content="common question">
-<meta property="og:updated_time" content="2017-03-07T12:56:04.000Z">
+<meta property="og:updated_time" content="2017-03-07T13:21:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Deep Learning">
 <meta name="twitter:description" content="common question">
@@ -413,6 +413,33 @@
 <li>Huffman coding：通过霍夫曼编码进一步压缩</li>
 <li>link：<a href="http://blog.csdn.net/cyh_24/article/details/51708469" target="_blank" rel="external">http://blog.csdn.net/cyh_24/article/details/51708469</a></li>
 </ul>
+<h2 id="AlexNet"><a href="#AlexNet" class="headerlink" title="AlexNet"></a>AlexNet</h2><ul>
+<li>卷积运算一个重要的特点就是:通过卷积运算，可以使原信号特征增强，并且降低噪音</li>
+<li>非线性激活函数：ReLU<ul>
+<li>从原始图像（256,256）中，随机的crop出一些图像（224,224）【平移变换，crop】</li>
+<li>水平翻转图像。【反射变换，flip】</li>
+<li>给图像增加一些随机的光照。【光照、彩色变换，color jittering】</li>
+</ul>
+</li>
+<li>防止过拟合的方法：Dropout，Data augmentation</li>
+<li>大数据训练：百万级ImageNet图像数据</li>
+<li>其他：GPU实现，LRN归一化层的使用</li>
+<li>测试的时候，对RGB空间做PCA，然后对主成分做一个(0, 0.1)的高斯扰动</li>
+<li>link：<a href="http://m.blog.csdn.net/article/details?id=51440344" target="_blank" rel="external">http://m.blog.csdn.net/article/details?id=51440344</a></li>
+</ul>
+<h2 id="深度信念网络"><a href="#深度信念网络" class="headerlink" title="深度信念网络"></a>深度信念网络</h2><ul>
+<li>自联想神经网络(自编码神经网络):三层BP网络，只不过它的输出等于输入, 输出是对输入的一种重构.</li>
+<li>使用层叠波尔兹曼机组成深度神经网络的方法，在深度学习里被称作深度信念网络DBN,通过层叠自编码网络的深度网络在深度学习里另外一个属于叫栈式自编码网络.</li>
+<li>DBN 在训练模型的过程中主要分为两步:<ul>
+<li>预训练：分别单独无监督地训练每一层 RBM 网络,确保特征向量映射到不同特征空间时,都尽可能多地保留特征信息;</li>
+<li>微调：在 DBN 的最后一层设置 BP 网络,接收 RBM 的输出特征向量作为它的输入特征向量,有监督地训练实体关系分类器.而且每一层 RBM 网络只能确保自身层内的 权值对该层特征向量映射达到最优,并不是对整个 DBN 的特征向量映射达到最优,所以反向传播网络还将错误信息自顶向下传播至每一层 RBM,微调整个 DBN 网络.RBM 网络训练模型的过程可以看作对一个深层 BP 网络权值参数的初始化,使DBN 克服了 BP 网络因随机初始化权值参数而容易陷入局部最优和训练时间长的缺点.</li>
+</ul>
+</li>
+<li>link：<ul>
+<li><a href="http://blog.csdn.net/yangyangliangliang/article/details/20644853" target="_blank" rel="external">http://blog.csdn.net/yangyangliangliang/article/details/20644853</a></li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -439,7 +466,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权重初始化"><span class="toc-number"></span> <span class="toc-text">权重初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number"></span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度下降"><span class="toc-number"></span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用激活函数"><span class="toc-number"></span> <span class="toc-text">为什么要使用激活函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归的正则化"><span class="toc-number"></span> <span class="toc-text">逻辑回归的正则化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度神经网络压缩"><span class="toc-number"></span> <span class="toc-text">深度神经网络压缩</span></a>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权重初始化"><span class="toc-number"></span> <span class="toc-text">权重初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number"></span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度下降"><span class="toc-number"></span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用激活函数"><span class="toc-number"></span> <span class="toc-text">为什么要使用激活函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归的正则化"><span class="toc-number"></span> <span class="toc-text">逻辑回归的正则化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度神经网络压缩"><span class="toc-number"></span> <span class="toc-text">深度神经网络压缩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AlexNet"><span class="toc-number"></span> <span class="toc-text">AlexNet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度信念网络"><span class="toc-number"></span> <span class="toc-text">深度信念网络</span></a>
         
     </div>
     <style>
