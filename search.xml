@@ -256,6 +256,47 @@
 </ul>
 </li>
 </ul>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><ul>
+<li>损失函数的正则化损失部分，对模型复杂程度的某种惩罚</li>
+<li>损失函数的第二个部分是数据损失，用于衡量分类算法的预测结果（即分类评分）和真实标签结果之间的一致性</li>
+<li><p>在分类问题中，一个最常见的损失函数就是SVM（是Weston Watkins 公式）：</p>
+<p>  <img src="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle L_i=\sum_{j\not=y_i}max(0,f_j-f_{y_i}+1)" style="border:none;"></p>
+</li>
+<li><p>第二个常用的损失函数是Softmax分类器，它使用交叉熵损失：</p>
+<p>  <img src="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle L_i=-log(\frac{e^{f_{y_i}}}{\sum_je^{f_j}})" style="border:none;"></p>
+</li>
+<li>当类别数目巨大时，就需要使用分层Softmax（Hierarchical Softmax），分层softmax将标签分解成一个树。每个标签都表示成这个树上的一个路径，这个树的每个节点处都训练一个Softmax分类器来在左和右分枝之间做决策。树的结构对于算法的最终结果影响很大</li>
+<li><p>属性（Attribute）分类：当每个样本含有多个正确的标签y时。</p>
+<ul>
+<li><p>在这种情况下，一个明智的方法是为每个属性创建一个独立的二分类的分类器。</p>
+<p>  <img src="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle L_i=\sum_jmax(0,1-y_{ij}f_j)" style="border:none;"></p>
+<ul>
+<li>上式中，求和是对所有分类j，Yij的值为1或者-1，具体根据第i个样本是否被第j个属性打标签而定，当该类别被正确预测并展示的时候，分值向量Fj为正，其余情况为负。可以发现，当一个正样本的得分小于+1，或者一个负样本得分大于-1的时候，算法就会累计损失值。</li>
+</ul>
+</li>
+<li><p>另一种方法是对每种属性训练一个独立的逻辑回归分类器</p>
+<p>  <img src="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle P(y=1|x;w,b)=\frac{1}{1+e^{-(w^Tx+b)}}=\sigma(w^Tx+b)" style="border:none;"></p>
+</li>
+</ul>
+</li>
+<li>回归问题<ul>
+<li>对于这种问题，通常是计算预测值和真实值之间的损失。然后用L2平方范式或L1范式度量差异</li>
+<li>L2损失比起较为稳定的Softmax损失来，其最优化过程要困难很多。<ul>
+<li>它需要网络具备一个特别的性质，即对于每个输入（和增量）都要输出一个确切的正确值。</li>
+<li>L2损失鲁棒性不好，因为异常值可以导致很大的梯度</li>
+<li>所以在面对一个回归问题时，先考虑将输出变成二值化是否真的不够用</li>
+<li>分类还有一个额外优点，就是能给出关于回归的输出的分布，而不是一个简单的毫无把握的输出值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>结构化预测（structured prediction）<ul>
+<li>结构化损失是指标签可以是任意的结构，例如图表、树或者其他复杂物体的情况。通常这种情况还会假设结构空间非常巨大，不容易进行遍历。</li>
+<li>结构化SVM背后的基本思想就是在正确的结构y_i和得分最高的非正确结构之间画出一个边界。</li>
+<li>link: <a href="https://zhuanlan.zhihu.com/p/21560667" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/21560667</a></li>
+</ul>
+</li>
+</ul>
 ]]></content>
     </entry>
     
