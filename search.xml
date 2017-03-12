@@ -4,7 +4,7 @@
   
     
     <entry>
-      <title><![CDATA[Deep Learning]]></title>
+      <title><![CDATA[Deep Learning:Neural Networrk]]></title>
       <url>http://stayrascal.github.io/2017/03/01/Deep-Learning/</url>
       <content type="html"><![CDATA[<h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><hr>
 <h2 id="权重初始化"><a href="#权重初始化" class="headerlink" title="权重初始化"></a>权重初始化</h2><ul>
@@ -296,6 +296,46 @@
 <li>link: <a href="https://zhuanlan.zhihu.com/p/21560667" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/21560667</a></li>
 </ul>
 </li>
+</ul>
+<h2 id="梯度检查"><a href="#梯度检查" class="headerlink" title="梯度检查"></a>梯度检查</h2><ul>
+<li>把解析梯度和数值计算梯度进行比较。</li>
+<li><p>使用中心化公式计算数值梯度：</p>
+<p>  <img src="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle \frac{df(x)}{dx}=\frac{f(x+h)-f(x-h)}{2h}" style="border:none;"></p>
+</li>
+<li><p>使用相对误差来比较：</p>
+<p>  <img src="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle \frac{|f'_a-f'_n|}{max(|f'_a|,|f'_n|)}" style="border:none;"></p>
+<ul>
+<li>相对误差&gt;1e-2：通常就意味着梯度可能出错。</li>
+<li>1e-2&gt;相对误差&gt;1e-4：要对这个值感到不舒服才行。</li>
+<li>1e-4&gt;相对误差：这个值的相对误差对于有不可导点的目标函数是OK的。但如果目标函数中没有kink（使用tanh和softmax），那么相对误差值还是太高。</li>
+<li>1e-7或者更小：好结果，可以高兴一把了。</li>
+<li>相对误差的值要根据网络的深度来定义</li>
+</ul>
+</li>
+<li>使用双精度<ul>
+<li>单精度会导致即使梯度实现正确，相对误差值也会很高（比如1e-2）</li>
+</ul>
+</li>
+<li>保持在浮点数的有效范围</li>
+<li>目标函数的不可导点（kinks）<ul>
+<li>解决不可导点问题的一个办法是使用更少的数据点</li>
+</ul>
+</li>
+<li>谨慎设置步长h<ul>
+<li>有时候如果梯度检查无法进行，可以试试将h调到1e-4或者1e-6，然后突然梯度检查可能就恢复正常。</li>
+</ul>
+</li>
+<li>在操作的特性模式中梯度检查<ul>
+<li>为了安全起见，最好让网络学习（“预热”）一小段时间，等到损失函数开始下降的之后再进行梯度检查</li>
+</ul>
+</li>
+<li>不要让正则化吞没数据<ul>
+<li>正则化损失可能吞没掉数据损失，在这种情况下梯度主要来源于正则化部分</li>
+<li>推荐先关掉正则化对数据损失做单独检查，然后对正则化做单独检查</li>
+</ul>
+</li>
+<li>记得关闭随机失活（dropout）和数据扩张（augmentation）</li>
+<li>检查少量的维度</li>
 </ul>
 ]]></content>
     </entry>
