@@ -27,7 +27,7 @@
 <meta property="og:image" content="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle P(y=1|x;w,b)=\frac{1}{1+e^{-(w^Tx+b)}}=\sigma(w^Tx+b)">
 <meta property="og:image" content="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle \frac{df(x)}{dx}=\frac{f(x+h)-f(x-h)}{2h}">
 <meta property="og:image" content="http://chart.googleapis.com/chart?cht=tx&chl=\displaystyle \frac{|f'_a-f'_n|}{max(|f'_a|,|f'_n|)}">
-<meta property="og:updated_time" content="2017-03-12T10:04:02.000Z">
+<meta property="og:updated_time" content="2017-03-19T11:09:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Deep Learning:Neural Networrk">
 <meta name="twitter:description" content="Neural Networrk">
@@ -671,6 +671,107 @@
 <li>记得关闭随机失活（dropout）和数据扩张（augmentation）</li>
 <li>检查少量的维度</li>
 </ul>
+<h2 id="Optimizer"><a href="#Optimizer" class="headerlink" title="Optimizer"></a>Optimizer</h2><ul>
+<li>SGD<ul>
+<li>现在的SGD一般都指mini-batch gradient descent</li>
+<li>权重的更新完全依赖于当前batch的梯度</li>
+<li>缺点：<ul>
+<li>选择合适的learning rate比较困难 - 对所有的参数更新使用同样的learning rate。对于稀疏数据或者特征，有时我们可能想更新快一些对于不经常出现的特征，对于常出现的特征更新慢一些，这时候SGD就不太能满足要求了</li>
+<li>SGD容易收敛到局部最优，并且在某些情况下可能被困在鞍点</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Momentum<ul>
+<li>momentum是模拟物理里动量的概念，积累之前的动量来替代真正的梯度</li>
+<li>M_t = U * M_t-1 + G_t</li>
+<li>特点：<ul>
+<li>下降初期时，使用上一次参数更新，下降方向一致，乘上较大的动量因子能够进行很好的加速</li>
+<li>下降中后期时，在局部最小值来回震荡的时候，gradient-&gt;0，动量因子使得更新幅度增大，跳出陷阱</li>
+<li>在梯度改变方向的时候，动量因子能够减少更新 总而言之，momentum项能够在相关方向加速SGD，抑制振荡，从而加快收敛</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Nesterov<ul>
+<li>nesterov项在梯度更新时做一个校正，避免前进太快，同时提高灵敏度。</li>
+<li>Nesterov基于momentum的改进就是让之前的动量直接影响当前的动量。</li>
+<li>所以，加上nesterov项后，梯度在大的跳跃后，进行计算对当前梯度进行校正。</li>
+<li>momentum项和nesterov项都是为了使梯度更新更加灵活，对不同情况有针对性。</li>
+<li>缺点：<ul>
+<li>人工设置一些学习率总还是有些生硬</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Adagrad<ul>
+<li>Adagrad其实是对学习率进行了一个约束</li>
+<li>N_t = N_t-1 + Gt^2</li>
+<li>特点：<ul>
+<li>前期g_t较小的时候， regularizer较大，能够放大梯度</li>
+<li>后期g_t较大的时候，regularizer较小，能够约束梯度</li>
+<li>适合处理稀疏梯度</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>仍依赖于人工设置一个全局学习率</li>
+<li>步长设置过大的话，会使regularizer过于敏感，对梯度的调节太大</li>
+<li>中后期，分母上梯度平方的累加将会越来越大，使gradient-&gt;0，使得训练提前结束</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Adadelta<ul>
+<li>Adadelta是对Adagrad的扩展，最初方案依然是对学习率进行自适应约束，但是进行了计算上的简化。 Adagrad会累加之前所有的梯度平方，而Adadelta只累加固定大小的项，并且也不直接存储这些项，仅仅是近似计算对应的平均值。</li>
+<li>N_t = v <em> N_t-1 + (1 - v) </em> Gt^2 </li>
+<li>经过近似牛顿迭代法处理之后，Adadelta已经不用依赖于全局学习率了:E|g^2|_t=p<em>E|g^2|_t-1+(1-p)</em>g_t^2</li>
+<li>特点：<ul>
+<li>训练初中期，加速效果不错，很快</li>
+<li>训练后期，反复在局部最小值附近抖动</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>RMSprop<ul>
+<li>RMSprop可以算作Adadelta的一个特例(p=0.5)</li>
+<li>特点：<ul>
+<li>其实RMSprop依然依赖于全局学习率</li>
+<li>RMSprop算是Adagrad的一种发展，和Adadelta的变体，效果趋于二者之间</li>
+<li>适合处理非平稳目标 - 对于RNN效果很好</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Adam<ul>
+<li>Adam(Adaptive Moment Estimation)本质上是带有动量项的RMSprop，它利用梯度的一阶矩估计和二阶矩估计动态调整每个参数的学习率。Adam的优点主要在于经过偏置校正后，每一次迭代学习率都有个确定范围，使得参数比较平稳。</li>
+<li>特点：<ul>
+<li>结合了Adagrad善于处理稀疏梯度和RMSprop善于处理非平稳目标的优点</li>
+<li>对内存需求较小</li>
+<li>为不同的参数计算不同的自适应学习率</li>
+<li>也适用于大多非凸优化 - 适用于大数据集和高维空间</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Adamax<ul>
+<li>Adamax是Adam的一种变体，此方法对学习率的上限提供了一个更简单的范围。</li>
+</ul>
+</li>
+<li>Nadam<ul>
+<li>Nadam类似于带有Nesterov动量项的Adam。</li>
+<li>Nadam对学习率有了更强的约束，同时对梯度的更新也有更直接的影响。</li>
+</ul>
+</li>
+<li>总结<ul>
+<li>对于稀疏数据，尽量使用学习率可自适应的优化方法，不用手动调节，而且最好采用默认值</li>
+<li>SGD通常训练时间更长，但是在好的初始化和学习率调度方案的情况下，结果更可靠</li>
+<li>如果在意更快的收敛，并且需要训练较深较复杂的网络时，推荐使用学习率自适应的优化方法。</li>
+<li>Adadelta，RMSprop，Adam是比较相近的算法，在相似的情况下表现差不多。</li>
+<li>在想使用带动量的RMSprop，或者Adam的地方，大多可以使用Nadam取得更好的效果</li>
+<li>Link： <a href="https://zhuanlan.zhihu.com/p/22252270" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/22252270</a></li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -697,7 +798,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权重初始化"><span class="toc-number"></span> <span class="toc-text">权重初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number"></span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度下降"><span class="toc-number"></span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用激活函数"><span class="toc-number"></span> <span class="toc-text">为什么要使用激活函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归的正则化"><span class="toc-number"></span> <span class="toc-text">逻辑回归的正则化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度神经网络压缩"><span class="toc-number"></span> <span class="toc-text">深度神经网络压缩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AlexNet"><span class="toc-number"></span> <span class="toc-text">AlexNet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度信念网络"><span class="toc-number"></span> <span class="toc-text">深度信念网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何训练深度神经网络"><span class="toc-number"></span> <span class="toc-text">如何训练深度神经网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#防止过拟合方法"><span class="toc-number"></span> <span class="toc-text">防止过拟合方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#损失函数"><span class="toc-number"></span> <span class="toc-text">损失函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度检查"><span class="toc-number"></span> <span class="toc-text">梯度检查</span></a>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#权重初始化"><span class="toc-number"></span> <span class="toc-text">权重初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据预处理"><span class="toc-number"></span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度下降"><span class="toc-number"></span> <span class="toc-text">梯度下降</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用激活函数"><span class="toc-number"></span> <span class="toc-text">为什么要使用激活函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑回归的正则化"><span class="toc-number"></span> <span class="toc-text">逻辑回归的正则化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度神经网络压缩"><span class="toc-number"></span> <span class="toc-text">深度神经网络压缩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AlexNet"><span class="toc-number"></span> <span class="toc-text">AlexNet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度信念网络"><span class="toc-number"></span> <span class="toc-text">深度信念网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何训练深度神经网络"><span class="toc-number"></span> <span class="toc-text">如何训练深度神经网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#防止过拟合方法"><span class="toc-number"></span> <span class="toc-text">防止过拟合方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#损失函数"><span class="toc-number"></span> <span class="toc-text">损失函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度检查"><span class="toc-number"></span> <span class="toc-text">梯度检查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Optimizer"><span class="toc-number"></span> <span class="toc-text">Optimizer</span></a>
         
     </div>
     <style>
