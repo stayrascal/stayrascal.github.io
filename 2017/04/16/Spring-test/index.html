@@ -15,15 +15,25 @@
 
 
 
-<meta name="description" content="stay hungery, stay foolish">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Stay Hungery, Stay Foolish">
-<meta property="og:url" content="http://stayrascal.github.io/tags/machine-learning/index.html">
+<meta name="description" content="Spring Annotation
+@BootstrapWith: 配置Spring TestContext框架如，@BootstrapWith用于指定自定义TestContextBootstrapper.
+@ContextConfiguration: 确定如何加载和配置ApplicationContext进行集成测试。
+@ContextConfiguration(locations = {},">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-test">
+<meta property="og:url" content="http://stayrascal.github.io/2017/04/16/Spring-test/index.html">
 <meta property="og:site_name" content="Stay Hungery, Stay Foolish">
-<meta property="og:description" content="stay hungery, stay foolish">
+<meta property="og:description" content="Spring Annotation
+@BootstrapWith: 配置Spring TestContext框架如，@BootstrapWith用于指定自定义TestContextBootstrapper.
+@ContextConfiguration: 确定如何加载和配置ApplicationContext进行集成测试。
+@ContextConfiguration(locations = {},">
+<meta property="og:updated_time" content="2017-04-16T15:50:57.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Stay Hungery, Stay Foolish">
-<meta name="twitter:description" content="stay hungery, stay foolish">
+<meta name="twitter:title" content="Spring-test">
+<meta name="twitter:description" content="Spring Annotation
+@BootstrapWith: 配置Spring TestContext框架如，@BootstrapWith用于指定自定义TestContextBootstrapper.
+@ContextConfiguration: 确定如何加载和配置ApplicationContext进行集成测试。
+@ContextConfiguration(locations = {},">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -55,7 +65,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Tag: machine learning | Stay Hungery, Stay Foolish</title>
+<title>Spring-test | Stay Hungery, Stay Foolish</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -65,9 +75,9 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
-        isTag: true,
+        isTag: false,
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
@@ -292,188 +302,188 @@
     </div>
     <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
 </nav>
-      <div class="body-wrap">
+      <div class="body-wrap"><article id="post-Spring-test" class="article article-type-post" itemscope itemprop="blogPost">
   
+    <div class="article-meta">
+      <a href="/2017/04/16/Spring-test/" class="article-date">
+      <time datetime="2017-04-16T15:22:18.000Z" itemprop="datePublished">2017-04-16</time>
+</a>
+
+
+    </div>
   
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spring-test
+    </h1>
+  
+
+      </header>
       
+      <div class="article-info article-info-post">
+        
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
     
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/04/29/Support-Vector-Machines/" class="archive-article-date">
-      <time datetime="2016-04-29T06:11:21.000Z" itemprop="datePublished">04-29</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="Spring-Annotation"><a href="#Spring-Annotation" class="headerlink" title="Spring Annotation"></a>Spring Annotation</h1><ul>
+<li>@BootstrapWith: 配置Spring TestContext框架如，@BootstrapWith用于指定自定义TestContextBootstrapper.</li>
+<li>@ContextConfiguration: 确定如何加载和配置ApplicationContext进行集成测试。<ul>
+<li>@ContextConfiguration(locations = {}, classes = {}, inheritInitializers = true)</li>
+</ul>
+</li>
+<li>@WebAppConfiguration:用于声明为集成测试加载的ApplicationContext<ul>
+<li>default value: “file:src/main/webapp”</li>
+<li>必须和ContextConfiguration一起联合使用</li>
+</ul>
+</li>
+<li>@ContextHierarchy：定义用于集成测试的ApplicationContexts层次结构<ul>
+<li><code>@ContextHierarchy({
+@ContextConfiguration(classes = AppConfig.class),
+@ContextConfiguration(classes = WebConfig.class)
+})</code></li>
+</ul>
+</li>
+<li>@ActiveProfiles:声明哪些bean定义配置文件应该处于活动状态。</li>
+<li>@TestPropertySource: 配置属性文件和内联属性的位置,加载到ApplicaitonContext的环境中<ul>
+<li>优先级高于operating system’s environment or Java system properties as well as property sources </li>
+</ul>
+</li>
+<li>@DirtiesContext：当一个application context被标为dirty的时候，它将会被从cache中移除<ul>
+<li>可以注解在类或者方法上</li>
+</ul>
+</li>
+<li>@TestExecutionListeners</li>
+<li>@Commit</li>
+<li>@Rollback</li>
+<li>@BeforeTransaction</li>
+<li>@AfterTransaction</li>
+<li>@Sql</li>
+<li>@SqlConfig</li>
+<li>@SqlGroup<ul>
+<li><code>@SqlGroup({
+@Sql(scripts = &quot;/test-schema.sql&quot;, config = @SqlConfig(commentPrefix = &quot;</code>“)),<br>@Sql(“/test-user-data.sql”)<br>)}`</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
 
 
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/03/21/Pandas/">
+                    Pandas
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring-Annotation"><span class="toc-number">1.</span> <span class="toc-text">Spring Annotation</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="Hide"  title="Show or Hide Table of Contents">
+
+    <script>
+        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
         </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/04/29/Support-Vector-Machines/">Support Vector Machines</a>
-    </h1>
-  
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Spring-test　| Stay Hungery, Stay Foolish　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
 
-        <div class="article-info info-on-archive">
-          
+    
+</div>
 
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+
+
+
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
+        
+
+        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/03/21/Pandas/" title="Next: Pandas">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
     </div>
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/04/28/Logistic-回归/" class="archive-article-date">
-      <time datetime="2016-04-28T14:50:17.000Z" itemprop="datePublished">04-28</time>
-</a>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/04/16/Spring-test/">Spring-test</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/21/Pandas/">Pandas</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/01/Deep-Learning/">Deep Learning:Neural Networrk</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/29/Support-Vector-Machines/">Support Vector Machines</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/28/Logistic-回归/">Logistic 回归</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/28/bayes/">bayes</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/27/decision-making-tree/">decision-making tree</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/27/KNN/">KNN</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/25/Spring-Data-JPA-Tutorial/">Spring Data JPA Tutorial</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/04/24/bash_keyboard_shortcuts/">Bash Keyboard Shortcuts</a></li></ul>
 
 
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/04/28/Logistic-回归/">Logistic 回归</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-    </div>
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/04/28/bayes/" class="archive-article-date">
-      <time datetime="2016-04-28T02:59:51.000Z" itemprop="datePublished">04-28</time>
-</a>
 
 
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/04/28/bayes/">bayes</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-    </div>
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/04/27/decision-making-tree/" class="archive-article-date">
-      <time datetime="2016-04-27T08:39:01.000Z" itemprop="datePublished">04-27</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/04/27/decision-making-tree/">decision-making tree</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-    </div>
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/04/27/KNN/" class="archive-article-date">
-      <time datetime="2016-04-27T03:14:57.000Z" itemprop="datePublished">04-27</time>
-</a>
-
-
-        </div>
-         
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/04/27/KNN/">KNN</a>
-    </h1>
-  
-
-        <div class="article-info info-on-archive">
-          
-
-          
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-    </div>
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-
+    <script>
+        
+    </script>
 </div>
       <footer id="footer">
     <div class="outer">

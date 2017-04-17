@@ -208,7 +208,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcuts/">Shortcuts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-JPA/">Spring Data JPA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shortcuts/">Shortcuts</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Data-JPA/">Spring Data JPA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
                     </div>
                 </section>
                 
@@ -298,6 +298,198 @@
     <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Spring-test" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/04/16/Spring-test/" class="article-date">
+      <time datetime="2017-04-16T15:22:18.000Z" itemprop="datePublished">2017-04-16</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/16/Spring-test/">Spring-test</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="Spring-Annotation"><a href="#Spring-Annotation" class="headerlink" title="Spring Annotation"></a>Spring Annotation</h1><ul>
+<li>@BootstrapWith: 配置Spring TestContext框架如，@BootstrapWith用于指定自定义TestContextBootstrapper.</li>
+<li>@ContextConfiguration: 确定如何加载和配置ApplicationContext进行集成测试。<ul>
+<li>@ContextConfiguration(locations = {}, classes = {}, inheritInitializers = true)</li>
+</ul>
+</li>
+<li>@WebAppConfiguration:用于声明为集成测试加载的ApplicationContext<ul>
+<li>default value: “file:src/main/webapp”</li>
+<li>必须和ContextConfiguration一起联合使用</li>
+</ul>
+</li>
+<li>@ContextHierarchy：定义用于集成测试的ApplicationContexts层次结构<ul>
+<li><code>@ContextHierarchy({
+@ContextConfiguration(classes = AppConfig.class),
+@ContextConfiguration(classes = WebConfig.class)
+})</code></li>
+</ul>
+</li>
+<li>@ActiveProfiles:声明哪些bean定义配置文件应该处于活动状态。</li>
+<li>@TestPropertySource: 配置属性文件和内联属性的位置,加载到ApplicaitonContext的环境中<ul>
+<li>优先级高于operating system’s environment or Java system properties as well as property sources </li>
+</ul>
+</li>
+<li>@DirtiesContext：当一个application context被标为dirty的时候，它将会被从cache中移除<ul>
+<li>可以注解在类或者方法上</li>
+</ul>
+</li>
+<li>@TestExecutionListeners</li>
+<li>@Commit</li>
+<li>@Rollback</li>
+<li>@BeforeTransaction</li>
+<li>@AfterTransaction</li>
+<li>@Sql</li>
+<li>@SqlConfig</li>
+<li>@SqlGroup<ul>
+<li><code>@SqlGroup({
+@Sql(scripts = &quot;/test-schema.sql&quot;, config = @SqlConfig(commentPrefix = &quot;</code>“)),<br>@Sql(“/test-user-data.sql”)<br>)}`</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/">Spring</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Pandas" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/03/21/Pandas/" class="article-date">
+      <time datetime="2017-03-21T14:56:45.000Z" itemprop="datePublished">2017-03-21</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/21/Pandas/">Pandas</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><ul>
+<li><p>link: <a href="http://pandas.pydata.org/pandas-docs/stable/10min.html#min" target="_blank" rel="external">http://pandas.pydata.org/pandas-docs/stable/10min.html#min</a></p>
+</li>
+<li><p>df.drop([0,1,3]): 删除第1，2，4行数据</p>
+</li>
+<li>df.drop([‘column1’, ‘column2’], axis=1): 删除列</li>
+<li>df.dropna(): 删除任何含有缺失值的行， 参数how=’all’表明值删除所有行都为缺失值的观测</li>
+<li>df.fillna(0): 用0填补所有缺失值</li>
+<li>df.fillna(method=’ffill’): 用前一个观察值填充</li>
+<li>df.fillna(method=’bfill’): 用后一个观察值填充</li>
+<li>df.fillna({‘column1’:value1, ‘column2’:value2}): 使用常量填充不同的列</li>
+<li>df.head(): See the top rows of the frame</li>
+<li>df.tail(3): Sees the bottom rows of the frame</li>
+<li>df.describe(): 现实统计信息</li>
+<li>df.T: 转置矩阵</li>
+<li>df.sort_index(axis=1, ascending=False): 根据axis排序</li>
+<li>df.sort_values(by=’column’): 根据values排序</li>
+<li>df.copy(): 复制</li>
+<li>df.isin([]): 过滤</li>
+</ul>
+<h3 id="Missing-Data"><a href="#Missing-Data" class="headerlink" title="Missing Data"></a>Missing Data</h3><ul>
+<li>df.dropna(how=’any’): 删除存在nan的行或列</li>
+<li>df.fillna(value=5): 用指定值填充nan</li>
+<li>pd.isnull(df):  得到boolean矩阵</li>
+</ul>
+<h3 id="Operations"><a href="#Operations" class="headerlink" title="Operations"></a>Operations</h3><ul>
+<li>df.mean()[df.mean(1)]: 求平均值</li>
+<li>df.apply(function): 改变值</li>
+<li>pd.value_counts(): 统计次数</li>
+<li>df.concat([one, two]): 合并并自动对齐两个数据框的变量</li>
+<li>pd.merge(left, right, on=’column’):横向合并</li>
+<li>df.append(s, ignore_index=True):添加新的一行</li>
+<li>df.groupby([‘column1’, ‘column2’])</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-Deep-Learning" class="article article-type-post" itemscope itemprop="blogPost">
   
